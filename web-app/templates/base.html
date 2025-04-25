@@ -1,0 +1,26 @@
+<!-- nav bar stuff will go here, can reuse in all other pages by just extending -->
+<!-- for example on how to use it, see login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}uhhh idk what we r calling this{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<nav>
+    <a href="{{ url_for('auth.start') }}">Home</a> |
+    <a href="{{ url_for('auth.login') }}">Login</a> |
+    <a href="{{ url_for('auth.signup') }}">Signup</a> |
+    <a href="{{ url_for('explore.explore') }}">Explore</a> |
+    <a href="{{ url_for('profile.profile') }}">Profile</a> |
+    <a href="{{ url_for('settings.settings') }}">Settings</a> 
+</nav>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>
