@@ -43,9 +43,9 @@ def signup():
             #"user_stats":{
                 #"total_words": 0,
                 #"total_entries": 0
-            },
+            })
             #"user_entries": []
-           # })
+           # }
         newId = result.inserted_id
 
         # User object is created here!
@@ -60,9 +60,48 @@ def signup():
         )
         login_user(user)
         flash("Account created sucessfully!")
-        return redirect(url_for("auth.dashboard"))
+        return redirect(url_for("auth.explore"))
     
     # flask function to look into the templates folder
     return render_template("signup.html")
 
 @auth_bp.route("/login", methods=["GET", "POST"])
+
+
+@auth_bp.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        userDoc = _db.users.find_one({"username": username})
+        if userDoc and check_password_hash(userDoc["pswdHash"], password):
+            user = User(
+                _id=userDoc["_id"], 
+                username=userDoc["username"], 
+                pswdHash=userDoc["pswdHash"],
+                nickname=userDoc.get("nickname"),
+                profile_pic=userDoc.get("profile_pic"),
+            )
+            login_user(user)
+            # store the app's current start marker session
+            session['app_start'] = current_app.config['APP_START']
+            flash("Welcome to our app!")
+            return redirect(url_for("auth.explore"))
+        else:
+            flash("Oops..invalid credentials, my friend, try again.")
+            return redirect(url_for("auth.login"))
+    return render_template("login.html")
+
+@auth_bp.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("Bye for now! Don't forget to stop by tomorrow!")
+    return redirect(url_for("auth.login")) # redirecting ot login page
+
+@auth_bp.route("/explore")
+@login_required
+def explore():
+    return render_template("explore.html", current_user=current_user)
