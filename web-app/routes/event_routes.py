@@ -12,6 +12,9 @@ def signup_event(event_id):
 
     if request.method == "POST":
         selected_folder = request.form.get("folder")
+        if selected_folder == "new":
+            return redirect(url_for('profile.create_board'))
+
         # handle saving to selected folder
         save_event_to_folder(session["user_id"], event_id, selected_folder)
         flash("Event saved successfully!")
