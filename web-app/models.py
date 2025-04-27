@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import os
 
+
 # connect to mongo
 mongo_uri = os.environ.get("MONGO_URI", "mongodb://mongo:27017/") # TODO: change this
 client = MongoClient(mongo_uri)
@@ -59,18 +60,3 @@ def create_event(user_id, title, description, image_url, date, location):
         "creator_id": user_id,
         "creator_username": username
     })
-'''
-def get_all_events():
-    events = []
-    for doc in db.events.find({}):
-        events.append({
-            "id": str(doc["_id"]),
-            "title": doc.get("title"),
-            "description": doc.get("description"),
-            "image_url": doc.get("image_url"),
-            "date": doc.get("date"),
-            "location": doc.get("location"),
-            "creator_username": doc.get("creator_username", "Unknown")
-        })
-    return events
-'''
