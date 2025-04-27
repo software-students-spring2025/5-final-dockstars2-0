@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<h1>Create an Account</h1>
+
+<form method="POST" action="{{ url_for('auth.signup') }}">
+    <label for="username">Username:</label><br>
+    <input type="text" id="username" name="username" required><br><br>
+
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <label for="profile_pic_url">Profile Picture URL (optional):</label><br>
+    <input type="text" id="profile_pic_url" name="profile_pic_url"><br><br>
+
+    <button type="submit">Sign Up</button>
+</form>
+
+<p>Already have an account? <a href="{{ url_for('auth.login') }}">Log in here</a>.</p>
+{% endblock %}

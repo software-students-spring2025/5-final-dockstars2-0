@@ -1,0 +1,28 @@
+<!-- home page / explore page -->
+
+{% extends "base.html" %}
+
+{% block title %}Explore Events{% endblock %}
+
+{% block content %}
+<h1>Explore Events</h1>
+
+<form method="GET" action="{{ url_for('explore.explore') }}" class="search-form">
+    <input type="text" name="q" placeholder="Search events..." value="{{ request.args.get('q', '') }}">
+    <button type="submit">Search</button>
+</form>
+
+<div class="event-grid">
+    {% for event in events %}
+        <div class="event-card">
+            <img src="{{ event.image_url }}" alt="{{ event.title }}" class="event-img">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.date }}</p>
+            <p>{{ event.location }}</p>
+            <a href="{{ url_for('event.view_event', event_id=event.id) }}">View Details</a>
+        </div>
+    {% else %}
+        <p>No events found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

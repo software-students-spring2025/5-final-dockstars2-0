@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}View Board{% endblock %}
+
+{% block content %}
+<div class="board-header">
+    <h1>{{ board.name }}</h1>
+    <p>{{ board.description or "No description yet." }}</p>
+</div>
+
+<hr>
+
+<h2>Events in "{{ board.name }}"</h2>
+<div class="board-events-gallery">
+    {% for event in events %}
+        <div class="event-card">
+            <img src="{{ event.image_url }}" alt="Event image" class="event-img">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.date }}</p>
+            <a href="{{ url_for('event.view_event', event_id=event.id) }}">View Event</a>
+        </div>
+    {% else %}
+        <p>No events saved to this board yet.</p>
+    {% endfor %}
+</div>
+
+<a href="{{ url_for('profile.profile') }}">← Back to Profile</a>
+{% endblock %}
