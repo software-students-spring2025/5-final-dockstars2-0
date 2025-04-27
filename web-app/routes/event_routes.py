@@ -62,10 +62,3 @@ def create_event_route():
         return redirect(url_for("auth.explore"))
 
     return render_template("create_event.html")
-
-
-
-
-
-
-
