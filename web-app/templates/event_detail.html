@@ -1,2 +1,37 @@
-<!-- when u click on an event to expand and see details -->
- <!-- should contain sign up form link -->
+{% extends "base.html" %}
+
+{% block title %}about this event{% endblock %}
+
+{% block content %}
+<h1>{{ event.title }}</h1>
+<img src="{{ event.image_url }}" alt="Event image" style="width:300px;"><br>
+<p>{{ event.description }}</p>
+<p><strong>Date:</strong> {{ event.date }}</p>
+<p><strong>Location:</strong> {{ event.location }}</p>
+<p><strong>Posted by:</strong> {{ event.creator_username }}</p>
+
+<a href="{{ url_for('event.signup_event', event_id=event.id) }}">
+    <button>save to profile</button>
+</a>
+
+<hr>
+
+<h2>Comments</h2>
+<ul>
+    {% for comment in comments %}
+    <li><strong>{{ comment.username }}:</strong> {{ comment.text }}</li>
+    {% else %}
+    <li>No comments yet.</li>
+    {% endfor %}
+</ul>
+
+{% if session.get("user_id") %}
+<form method="POST" action="{{ url_for('event.add_comment', event_id=event.id) }}">
+    <textarea name="comment_text" placeholder="Add a comment..." required></textarea><br>
+    <button type="submit">Post Comment</button>
+</form>
+{% else %}
+<p><a href="{{ url_for('auth.login') }}">Log in</a> to comment.</p>
+{% endif %}
+
+{% endblock %}
