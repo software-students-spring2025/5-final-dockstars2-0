@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 #from flask import session, redirect, url_for, flash
 #from flask import session, redirect, url_for, flash
 #from bson.objectid import ObjectId
@@ -71,4 +69,3 @@ def create_event_route():
 
 
 
->>>>>>> aab62c716f751503eb72a702d30c7437a14d14ea
