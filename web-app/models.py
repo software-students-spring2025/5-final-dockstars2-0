@@ -59,6 +59,7 @@ def create_event(user_id, title, description, image_url, date, location):
         "creator_id": user_id,
         "creator_username": username
     })
+'''
 def get_all_events():
     events = []
     for doc in db.events.find({}):
@@ -72,3 +73,4 @@ def get_all_events():
             "creator_username": doc.get("creator_username", "Unknown")
         })
     return events
+'''
