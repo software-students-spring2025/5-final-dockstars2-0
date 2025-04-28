@@ -36,6 +36,7 @@ def signup():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        email = request.form.get("email")
 
         # checking for existing user using pymongo
         existingUser = _db.users.find_one({"username": username})
@@ -47,6 +48,7 @@ def signup():
         result = _db.users.insert_one(
             {
                 "username": username,
+                "email": email,
                 "pswdHash": pswdHash,
                 "nickname": username, 
                 "profile_pic": "static/nav-icons/profile-icon.svg",
