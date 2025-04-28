@@ -13,6 +13,9 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson.objectid import ObjectId
 
+
+
+
 # creating the blueprint
 auth_bp = Blueprint("auth", __name__, template_folder="templates")
 
@@ -68,7 +71,7 @@ def signup():
     # flask function to look into the templates folder
     return render_template("signup.html")
 
-
+'''
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -77,7 +80,39 @@ def login():
         session["app_start"] = current_app.config["APP_START"]
         flash("Welcome!")
         return redirect(url_for("explore.explore"))   # ← same redirect
-    return render_template("auth/login.html")      
+    return render_template("auth/login.html")    
+'''  
+
+@auth_bp.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # Look up the user in the database
+        userDoc = _db.users.find_one({"username": username})
+
+        # Check that the user exists and the password matches
+        if userDoc and check_password_hash(userDoc["pswdHash"], password):
+            # Create a User object
+            user = User(
+                _id=userDoc["_id"],
+                username=userDoc["username"],
+                pswdHash=userDoc["pswdHash"],
+                nickname=userDoc.get("nickname", userDoc["username"]),
+                profile_pic=userDoc.get("profile_pic", "static/nav-icons/profile-icon.svg"),
+            )
+
+            login_user(user)
+            session["app_start"] = current_app.config["APP_START"]
+            flash("Welcome!")
+            return redirect(url_for("explore.explore"))  
+        else:
+            flash("Invalid username or password. Please try again.")
+            return redirect(url_for("auth.login"))
+
+    return render_template("auth/login.html")
+
 
 
 @auth_bp.route("/logout")
