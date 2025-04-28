@@ -69,7 +69,7 @@ def signup():
         return redirect(url_for("auth.explore"))
 
     # flask function to look into the templates folder
-    return render_template("signup.html")
+    return render_template("auth/signup.html")
 
 '''
 @auth_bp.route("/login", methods=["GET", "POST"])
