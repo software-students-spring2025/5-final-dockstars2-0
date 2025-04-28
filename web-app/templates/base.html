@@ -5,20 +5,108 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}uhhh idk what we r calling this{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="../static/css/styles.css">
 </head>
 <body>
 
-<nav>
-    <a href="{{ url_for('auth.login') }}">Login</a> |
-    <a href="{{ url_for('auth.signup') }}">Signup</a> |
-    <a href="{{ url_for('explore.explore') }}">Explore</a> |
-    <a href="{{ url_for('profile.profile') }}">Profile</a> |
-</nav>
+    <div class="content">
 
-<main>
-    {% block content %}{% endblock %}
-</main>
+        <nav class="sidebar">
+            <div class="top-section">
+              <a href="{{ url_for('explore.explore')}}" class="nav-item">
+                <svg class="nav-icon">
+                  <use href="../static/images/icons.svg#icon-yonderguy"></use>
+                </svg>
+              </a>
+            </div>
+          
+            <div class="sidebar-content">
+              <a href="{{ url_for('profile.profile')}}" class="nav-item">
+                <svg class="nav-icon">
+                  <use href="../static/images/icons.svg#icon-profile"></use>
+                </svg>
+              </a>
+              <a href="{{ url_for('profile.profile')}}" class="nav-item">
+                <svg class="nav-icon">
+                  <use href="../static/images/icons.svg#icon-bookmarks"></use>
+                </svg>
+              </a>
+              <a href="{{ url_for('profile.profile')}}" class="nav-item">
+                <svg class="nav-icon">
+                  <use href="../static/images/icons.svg#icon-notifs"></use>
+                </svg>
+              </a>
+            </div>
+          
+            <div class="bottom-section">
+                {% if current_user.is_authenticated %}
+                  <a href="{{ url_for('auth.logout') }}" class="nav-item">
+                    <svg class="nav-icon">
+                      <use href="../static/images/icons.svg#icon-logout"></use>
+                    </svg>
+                  </a>
+                {% else %}
+                  <a href="{{ url_for('auth.login') }}" class="nav-item">
+                    <svg class="nav-icon">
+                      <use href="../static/images/icons.svg#icon-login"></use>
+                    </svg>
+                  </a>
+                {% endif %}
+              </div>
+              
+          </nav>
+          
+          
+          
+        
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+        
+    </div>
+
 
 </body>
+<script>
+    const navlogo = document.querySelector(".nav-icon")
+    const navitems = document.querySelectorAll(".nav-item")
+
+    window.addEventListener("load", ()=>{
+    let colors = ["#EEBEDC", "#F4DD81", "#BDCBE9", "#BAC693"]
+
+    randColor = colors[Math.floor(Math.random() * colors.length)];
+
+    navlogo.style.fill = randColor
+
+    navitems.forEach(item =>{
+
+        item.addEventListener("mouseenter", ()=>{
+            item.style.cursor = "pointer";
+            item.style.transition = 'fill 1s ease'
+
+        setTimeout(() => {
+            item.style.fill = colors[Math.floor(Math.random() * colors.length)];
+        }, 100); // 100ms delay
+    
+    })
+
+    item.addEventListener("mouseleave", ()=>{
+        item.style.cursor = "pointer";
+        item.style.transition = 'fill 1s ease'
+        
+
+        setTimeout(() => {
+            item.style.fill = "#000"
+        }, 100); // 100ms delay
+    
+    })
+
+    })
+
+    
+
+})
+
+
+</script>
 </html>

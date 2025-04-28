@@ -3,23 +3,37 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
-<h1>Create an Account</h1>
+<div class="login-container">
+    <h1 class="login-title">Create an Account</h1>
+    <form method="POST" action="{{ url_for('auth.signup') }}" class="login-form">
+        <input type="text" id="username" name="username" placeholder="Username" required class="login-input">
+        <input type="email" id="email" name="email" placeholder="Email" required class="login-input">
+        <input type="password" id="password" name="password" placeholder="Password" required class="login-input">
+        <input type="text" id="profile_pic_url" name="profile_pic_url" placeholder="Profile Picture URL (optional)" class="login-input">
+        <button type="submit" class="login-button" id="signup-btn">Sign Up</button>
+    </form>
+    <p class="signup-redirect">
+        Already have an account?
+        <a href="{{ url_for('auth.login') }}" class="signup-link">Log in here</a>.
+    </p>
+</div>
 
-<form method="POST" action="{{ url_for('auth.signup') }}">
-    <label for="username">Username:</label><br>
-    <input type="text" id="username" name="username" required><br><br>
+<script>
+    window.addEventListener("load", () => {
+        const colors = ["#EEBEDC", "#F4DD81", "#BDCBE9", "#BAC693"];
+        const randColor = colors[Math.floor(Math.random() * colors.length)];
 
-    <label for="email">Email:</label><br>
-    <input type="email" id="email" name="email" required><br><br>
+        const signupBtn = document.getElementById("signup-btn");
+        signupBtn.style.backgroundColor = randColor;
 
-    <label for="password">Password:</label><br>
-    <input type="password" id="password" name="password" required><br><br>
+        signupBtn.addEventListener("mouseenter", () => {
+            signupBtn.style.transition = "background-color 0.3s ease";
+            signupBtn.style.backgroundColor = "#000";
+        });
 
-    <label for="profile_pic_url">Profile Picture URL (optional):</label><br>
-    <input type="text" id="profile_pic_url" name="profile_pic_url"><br><br>
-
-    <button type="submit">Sign Up</button>
-</form>
-
-<p>Already have an account? <a href="{{ url_for('auth.login') }}">Log in here</a>.</p>
+        signupBtn.addEventListener("mouseleave", () => {
+            signupBtn.style.backgroundColor = randColor;
+        });
+    });
+</script>
 {% endblock %}
