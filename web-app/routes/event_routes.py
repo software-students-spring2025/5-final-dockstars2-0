@@ -13,7 +13,9 @@ from models import db
 
 
 
-event_bp = Blueprint("event", __name__, template_folder="templates/event")
+#event_bp = Blueprint("event", __name__, template_folder="templates/event")
+event_bp = Blueprint("event", __name__, template_folder="event")
+
 
 @event_bp.route("/event/<event_id>/signup", methods=["GET", "POST"])
 @login_required
@@ -54,16 +56,25 @@ def add_event():
             date=date,
             location=location
         )
-
+        '''
         db.users.update_one(
             {"_id": ObjectId(current_user._id)},
             {"$push": {"created_events": ObjectId(event_id)}}
         )
+        '''
+
+        db.users.update_one(
+        {"_id": ObjectId(current_user.id)},
+        )
+
 
         flash("Event created successfully!")
         return redirect(url_for("auth.explore"))
 
-    return render_template("create_event.html")
+    #return render_template("create_event.html")
+    #return render_template("add_event.html")
+    return render_template("event/add_event.html")
+
 
 @event_bp.route("/event/<event_id>/delete", methods=["POST"])
 @login_required
@@ -98,7 +109,7 @@ def edit_event(event_id):
 @login_required
 def plan_to_attend(event_id):
     db.users.update_one(
-        {"_id": ObjectId(current_user._id)},
+        {"_id": ObjectId(current_user.id)},
         {"$addToSet": {"planning_events": ObjectId(event_id)}}
     )
     flash("You are now planning to attend this event!")
@@ -108,7 +119,7 @@ def plan_to_attend(event_id):
 @login_required
 def maybe_attend(event_id):
     db.users.update_one(
-        {"_id": ObjectId(current_user._id)},
+        {"_id": ObjectId(current_user.id)},
         {"$addToSet": {"maybe_events": ObjectId(event_id)}}
     )
     flash("You've marked this event as maybe attending.")
