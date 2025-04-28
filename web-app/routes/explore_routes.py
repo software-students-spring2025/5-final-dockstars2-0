@@ -9,3 +9,4 @@ explore_bp = Blueprint("explore", __name__, template_folder="templates")
 def explore():
     events = get_all_events()
     return render_template("explore/explore.html", events=events, username=current_user.username)
+
