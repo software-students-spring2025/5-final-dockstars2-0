@@ -42,5 +42,68 @@
 // }, 4000);
 
 
+const logo = document.getElementById("logo")
+const loginbtn = document.querySelector(".loginbtn")
+const signupbtn = document.querySelector(".signupbtn")
+
+window.addEventListener("load", ()=>{
+    let colors = ["#EEBEDC", "#F4DD81", "#BDCBE9", "#BAC693"]
+
+    randColor = colors[Math.floor(Math.random() * colors.length)];
+
+    // logo.style.fill = randColor
+    loginbtn.style.backgroundColor = randColor
+    signupbtn.style.backgroundColor = randColor
+
+    // logo.style.transition = 'fill 1s ease';
+
+    // setTimeout(() => {
+    //     logo.style.fill = randColor
+    // }, 1500); // 100ms delay
+
+
+    loginbtn.addEventListener("mouseenter", ()=>{
+        logo.style.transition = 'fill 1s ease'
+
+        setTimeout(() => {
+            logo.style.fill = randColor
+        }, 100); // 100ms delay
+    
+    })
+
+    loginbtn.addEventListener("mouseleave", ()=>{
+        logo.style.transition = 'fill 1s ease'
+
+        setTimeout(() => {
+            logo.style.fill = "#000"
+        }, 100); // 100ms delay
+    
+    })
+
+    signupbtn.addEventListener("mouseenter", ()=>{
+        logo.style.transition = 'fill 1s ease'
+
+        setTimeout(() => {
+            logo.style.fill = randColor
+        }, 100); // 100ms delay
+    
+    })
+
+    signupbtn.addEventListener("mouseleave", ()=>{
+        logo.style.transition = 'fill 1s ease'
+
+        setTimeout(() => {
+            logo.style.fill = "#000"
+        }, 100); // 100ms delay
+    
+    })
+
+})
+
+loginbtn.addEventListener("mouseenter", ()=>{
+
+})
+
+
 </script>
 </html>

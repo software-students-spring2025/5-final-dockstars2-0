@@ -1,3 +1,5 @@
+/* #231F20 */
+
 body, html{
     height: 100%;
     font-family: Arial, Helvetica, sans-serif
@@ -13,7 +15,9 @@ body{
 #logo{
     width: 500px; 
     height: 500px; 
+    fill: #000;
 }
+
 
 #loading{
     animation: fadeInUp 2500ms ease, zoomOut 1s 2500ms ease forwards;
@@ -29,17 +33,22 @@ body{
     margin: 5px;
     margin-bottom: 30px;
     font-size: 20px;
-    font-family: Arial, Helvetica, sans-serif
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
+    color: white;
+    font-weight: bold;
 }
 
 .loginbtn{
     animation: fadeInUpBtn 1s 3500ms ease forwards;
     opacity: 0;
+    background-color: #F4DD81;
 }
 
 .signupbtn{
     animation: fadeInUpBtn 1s 4500ms ease forwards;
     opacity: 0;
+    background-color: #F4DD81;
 
 }
 
