@@ -14,7 +14,6 @@ app.login_manager = login_manager
 login_manager.login_view = "auth.login"
 
 
-# User class (simplified example)
 class User(UserMixin):
     def __init__(self, _id, username, pswdHash, nickname=None, profile_pic=None):
         self.id = str(_id)
