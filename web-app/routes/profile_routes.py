@@ -12,10 +12,14 @@ profile_bp = Blueprint("profile", __name__, template_folder="templates/profile")
 @login_required
 def profile():
     # Load user folders
+
+    user_doc = db.users.find_one({"_id": ObjectId(current_user.id)})
+
     folders = get_user_folders(str(current_user.id))
 
     # Load events the user is planning or maybe attending (COMBINED)
-    planning_event_ids = getattr(current_user, "planning_events", []) + getattr(current_user, "maybe_events", [])
+    #planning_event_ids = getattr(current_user, "planning_events", []) + getattr(current_user, "maybe_events", [])
+    planning_event_ids = user_doc.get("planning_events", []) + user_doc.get("maybe_events", [])
     planning_events = []
     for event_id in planning_event_ids:
         event = get_event_by_id(event_id)
@@ -23,7 +27,8 @@ def profile():
             planning_events.append(event)
 
     # Load events the user has attended
-    attended_event_ids = getattr(current_user, "attended_events", [])
+    #attended_event_ids = getattr(current_user, "attended_events", [])
+    attended_event_ids = user_doc.get("attended_events", [])
     attended_events = []
     for event_id in attended_event_ids:
         event = get_event_by_id(event_id)
