@@ -61,5 +61,23 @@ def create_event(user_id, title, description, image_url, date, location):
         "creator_username": username
     })
 
+def delete_event_by_id(event_id):
+    db.events.delete_one({"_id": ObjectId(event_id)})
+
+def update_event_by_id(event_id, title, description, image_url, date, location):
+    db.events.update_one(
+        {"_id": ObjectId(event_id)},
+        {"$set": {
+            "title": title,
+            "description": description,
+            "image_url": image_url,
+            "date": date,
+            "location": location
+        }}
+    )
+
+
+
+
 
 
