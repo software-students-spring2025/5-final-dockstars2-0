@@ -47,7 +47,7 @@ def add_comment_to_event(user_id, event_id, text):
         "username": username,
         "text": text
     })
-
+'''
 def create_event(user_id, title, description, image_url, date, location):
     user = db.users.find_one({"_id": ObjectId(user_id)})
     username = user["username"] if user else "Unknown"
@@ -60,6 +60,35 @@ def create_event(user_id, title, description, image_url, date, location):
         "creator_id": user_id,
         "creator_username": username
     })
+'''
+def create_event(user_id, title, description, image_url, date, location):
+    user = db.users.find_one({"_id": ObjectId(user_id)})
+    username = user["username"] if user else "Unknown"
+
+    db.events.insert_one({
+        "title": title,
+        "description": description,
+        "image_url": image_url,
+        "date": date,
+        "location": location,
+        "creator_id": user_id,
+        "creator_username": username
+    })
+
+
+def get_all_events():
+    events = []
+    for doc in db.events.find({}):
+        events.append({
+            "id": str(doc["_id"]),
+            "title": doc.get("title"),
+            "description": doc.get("description"),
+            "image_url": doc.get("image_url"),
+            "date": doc.get("date"),
+            "location": doc.get("location"),
+            "creator_username": doc.get("creator_username", "Unknown")
+        })
+    return events
 
 def delete_event_by_id(event_id):
     db.events.delete_one({"_id": ObjectId(event_id)})
@@ -75,9 +104,3 @@ def update_event_by_id(event_id, title, description, image_url, date, location):
             "location": location
         }}
     )
-
-
-
-
-
-

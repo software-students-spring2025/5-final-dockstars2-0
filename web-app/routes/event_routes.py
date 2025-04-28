@@ -3,13 +3,23 @@
 #from bson.objectid import ObjectId
 #from pymongo import MongoClient
 #import os
-
+'''
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import login_required, current_user
 from models import get_event_by_id, get_user_folders, save_event_to_folder, create_event
 from models import delete_event_by_id
 from models import update_event_by_id, get_event_by_id
-
+'''
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask_login import login_required, current_user
+from models import (
+    get_event_by_id,
+    get_user_folders,
+    save_event_to_folder,
+    create_event,
+    delete_event_by_id,
+    update_event_by_id
+)
 
 event_bp = Blueprint("event", __name__, template_folder="templates")
 
@@ -63,6 +73,7 @@ def create_event_route():
         flash("Event created successfully!")
         return redirect(url_for("auth.explore"))
 
+
     return render_template("create_event.html") 
 
 @event_bp.route("/event/<event_id>/delete", methods=["POST"])
@@ -97,8 +108,6 @@ def edit_event(event_id):
         return redirect(url_for("auth.explore"))
 
     return render_template("edit_event.html", event=event)
-
-
 
 
 
