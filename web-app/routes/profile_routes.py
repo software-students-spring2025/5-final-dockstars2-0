@@ -54,5 +54,3 @@ def create_board():
         return redirect(url_for("profile.profile"))
 
     return render_template("profile/create_board.html")
-
-
