@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/css/styles.css">
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="loading">
+        <svg id="logo">
+            <use href="../../static/images/yonderlogo-01.svg#guySymbol"></use>
+        </svg>
+
+    </div>    
+
+        <a class="loginbtn" id="btn1ani" href="{{ url_for ('explore.explore_home')}}">explore</a>
+
+   
+        <a class="signupbtn" id="btn2ani" href="{{ url_for ('auth.login' )}}">login</a>
+
+        <p class="signuplink"> <i>or <a href="{{ url_for ('auth.signup')}}">Sign-up</a> for an account.</i></p>
+
+
+
+</body>
+<script>
+
+
+const logo = document.getElementById("logo")
+const loginbtn = document.querySelector(".loginbtn")
+const signupbtn = document.querySelector(".signupbtn")
+
+window.addEventListener("load", ()=>{
+    let colors = ["#EEBEDC", "#F4DD81", "#BDCBE9", "#BAC693"]
+
+    randColor = colors[Math.floor(Math.random() * colors.length)];
+
+    // logo.style.fill = randColor
+    loginbtn.style.backgroundColor = randColor
+    loginbtn.style.cursor = "pointer";
+    signupbtn.style.backgroundColor = randColor
+    signupbtn.style.cursor = "pointer";
+
+    // logo.style.transition = 'fill 1s ease';
+
+    // setTimeout(() => {
+    //     logo.style.fill = randColor
+    // }, 1500); // 100ms delay
+
+
+    loginbtn.addEventListener("mouseenter", ()=>{
+        loginbtn.style.cursor = "pointer";
+        logo.style.transition = 'fill 1s ease'
+
+        setTimeout(() => {
+            logo.style.fill = randColor
+        }, 100); // 100ms delay
+    
+    })
+
+    loginbtn.addEventListener("mouseleave", ()=>{
+        loginbtn.style.cursor = "pointer";
+        logo.style.transition = 'fill 1s ease'
+        
+        
+
+        setTimeout(() => {
+            logo.style.fill = "#000"
+        }, 100); // 100ms delay
+    
+    })
+
+    signupbtn.addEventListener("mouseenter", ()=>{
+        signupbtn.style.cursor = "pointer";
+        logo.style.transition = 'fill 1s ease'
+       
+
+        setTimeout(() => {
+            logo.style.fill = randColor
+        }, 100); // 100ms delay
+    
+    })
+
+    signupbtn.addEventListener("mouseleave", ()=>{
+        signupbtn.style.cursor = "pointer";
+        logo.style.transition = 'fill 1s ease'
+        
+
+        setTimeout(() => {
+            logo.style.fill = "#000"
+        }, 100); // 100ms delay
+    
+    })
+
+})
+
+
+</script>
+</html>
