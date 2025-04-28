@@ -1,13 +1,14 @@
+import os
+from dotenv import load_dotenv
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-import os
 
+load_dotenv()
 
 # connect to mongo
-mongo_uri = os.environ.get("MONGO_URI", "mongodb://mongo:27017/") # TODO: change this
+mongo_uri = os.environ.get("MONGO_URI")
 client = MongoClient(mongo_uri)
-db = client["temp"] # change db name
-
+db = client[os.environ.get("MONGO_DBNAME")]
 
 def get_event_by_id(event_id):
     # MongoDB find event by ID
@@ -65,7 +66,7 @@ def create_event(user_id, title, description, image_url, date, location):
     user = db.users.find_one({"_id": ObjectId(user_id)})
     username = user["username"] if user else "Unknown"
 
-    db.events.insert_one({
+    result = db.events.insert_one({
         "title": title,
         "description": description,
         "image_url": image_url,
@@ -74,6 +75,9 @@ def create_event(user_id, title, description, image_url, date, location):
         "creator_id": user_id,
         "creator_username": username
     })
+
+    return result.inserted_id   
+
 
 
 def get_all_events():

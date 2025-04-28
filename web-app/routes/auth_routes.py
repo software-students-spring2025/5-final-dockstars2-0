@@ -50,6 +50,11 @@ def signup():
                 "pswdHash": pswdHash,
                 "nickname": username, 
                 "profile_pic": "static/nav-icons/profile-icon.svg",
+                "created_events": [],
+                "planning_events": [],
+                "maybe_events": [],
+                "attended_events": []
+
             }
         )
         newId = result.inserted_id
@@ -66,7 +71,7 @@ def signup():
         )
         login_user(user)
         flash("Account created sucessfully!")
-        return redirect(url_for("auth.explore"))
+        return redirect(url_for("explore.explore"))
 
     # flask function to look into the templates folder
     return render_template("auth/signup.html")
@@ -89,11 +94,16 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        #print("POST received:", username)
+
         # Look up the user in the database
         userDoc = _db.users.find_one({"username": username})
+        #print("UserDoc:", userDoc)
+
 
         # Check that the user exists and the password matches
         if userDoc and check_password_hash(userDoc["pswdHash"], password):
+            #print("Password correct, logging in!")
             # Create a User object
             user = User(
                 _id=userDoc["_id"],
@@ -108,6 +118,7 @@ def login():
             flash("Welcome!")
             return redirect(url_for("explore.explore"))  
         else:
+            #print("Login failed!")
             flash("Invalid username or password. Please try again.")
             return redirect(url_for("auth.login"))
 
