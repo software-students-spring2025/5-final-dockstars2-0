@@ -7,9 +7,12 @@ from routes.event_routes import event_bp
 from routes.profile_routes import profile_bp
 from routes.explore_routes import explore_bp
 from flask_login import LoginManager, UserMixin
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.secret_key = "supersecret" # change later w env
+app.config["APP_START"] = datetime.now()
 
 # connect to mongo
 mongo_uri = os.environ.get("MONGO_URI")
