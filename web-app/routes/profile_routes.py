@@ -31,7 +31,7 @@ def profile():
             attended_events.append(event)
 
     return render_template("profile/profile.html", 
-                           current_user=current_user,
+                           user=current_user,
                            folders=folders,
                            planning_events=planning_events,
                            attended_events=attended_events)
