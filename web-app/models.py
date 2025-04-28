@@ -1,13 +1,14 @@
+import os
+from dotenv import load_dotenv
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-import os
 
+load_dotenv()
 
 # connect to mongo
-mongo_uri = os.environ.get("MONGO_URI", "mongodb://mongo:27017/") # TODO: change this
+mongo_uri = os.environ.get("MONGO_URI")
 client = MongoClient(mongo_uri)
-db = client["temp"] # change db name
-
+db = client[os.environ.get("MONGO_DBNAME")]
 
 def get_event_by_id(event_id):
     # MongoDB find event by ID

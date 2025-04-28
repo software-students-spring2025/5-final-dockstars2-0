@@ -66,7 +66,7 @@ def signup():
         )
         login_user(user)
         flash("Account created sucessfully!")
-        return redirect(url_for("auth.explore"))
+        return redirect(url_for("explore.explore"))
 
     # flask function to look into the templates folder
     return render_template("auth/signup.html")

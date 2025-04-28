@@ -1,5 +1,8 @@
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+import os
 from flask import Flask
-from routes.auth_routes import auth_bp
+from routes.auth_routes import auth_bp, init_auth
 from routes.event_routes import event_bp
 from routes.profile_routes import profile_bp
 from routes.explore_routes import explore_bp
@@ -7,6 +10,11 @@ from flask_login import LoginManager, UserMixin
 
 app = Flask(__name__)
 app.secret_key = "supersecret" # change later w env
+
+# connect to mongo
+mongo_uri = os.environ.get("MONGO_URI")
+client = MongoClient(mongo_uri)
+db = client[os.environ.get("MONGO_DBNAME")]
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -20,6 +28,8 @@ class User(UserMixin):
         self.username = username
         self.pswdHash = pswdHash
         self.nickname = nickname or username
+
+init_auth(db, User)
 
 # user_loader function
 @login_manager.user_loader
