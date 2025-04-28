@@ -1,0 +1,90 @@
+body, html{
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#logo{
+    width: 500px; 
+    height: 500px; 
+}
+
+#loading{
+    animation: fadeInUp 2500ms ease, zoomOut 1s 2500ms ease forwards;
+    margin-bottom: 0px;
+}
+
+.loginbtn, .signupbtn{
+    border: 0;
+    border-radius: 40px;
+    width: 150px;
+    height: 40px;
+    cursor: pointer;
+    margin: 5px;
+    margin-bottom: 30px;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif
+}
+
+.loginbtn{
+    animation: fadeInUpBtn 1s 3500ms ease forwards;
+    opacity: 0;
+}
+
+.signupbtn{
+    animation: fadeInUpBtn 1s 4500ms ease forwards;
+    opacity: 0;
+
+}
+
+.button {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  
+  .button.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+
+
+@keyframes fadeInUp {
+    0% {
+      transform: translateY(15%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(10%);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUpBtn {
+    0% {
+      transform: translateY(-150%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(-200%);
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoomOut {
+    0% {
+        transform: scale(1) translateY(10%);
+    }
+    100%{
+        transform: scale(0.8) translateY(0%);
+        
+    }
+    
+  }
