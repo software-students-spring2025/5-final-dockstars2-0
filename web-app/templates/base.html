@@ -71,7 +71,7 @@
     const navlogo = document.querySelector(".nav-icon")
     const navitems = document.querySelectorAll(".nav-item")
 
-    window.addEventListener("load", ()=>{
+    document.addEventListener("DOMContentLoaded", ()=>{
     let colors = ["#EEBEDC", "#F4DD81", "#BDCBE9", "#BAC693"]
 
     randColor = colors[Math.floor(Math.random() * colors.length)];
@@ -92,7 +92,7 @@
 
     item.addEventListener("mouseleave", ()=>{
         item.style.cursor = "pointer";
-        item.style.transition = 'fill 1s ease'
+        item.style.transition = 'fill .3s ease'
         
 
         setTimeout(() => {
