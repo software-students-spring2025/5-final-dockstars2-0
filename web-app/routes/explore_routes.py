@@ -6,10 +6,21 @@ explore_bp = Blueprint("explore", __name__, template_folder="templates")
 
 #DISPLAAYYY EVENNTTTTTS
 @explore_bp.route("/", methods=["GET"])
-@login_required
 def explore():
-    events = get_all_events()
-    return render_template("explore/explore.html", events=events, username=current_user.username)
+    if current_user.is_authenticated:
+        events = get_all_events()
+        return render_template("explore/explore.html", events=events, username=current_user.username)
+    else:
+        return render_template("explore/landing.html")
+    
+@explore_bp.route("/home", methods=["GET"])
+def explore_home():
+    if current_user.is_authenticated:
+        events = get_all_events()
+        return render_template("explore/explore.html", events=events, username=current_user.username)
+    else:
+        events = get_all_events()
+        return render_template("explore/explore.html", events=events, username=None)
 
 
 #GET EVENT DETAIILLLL

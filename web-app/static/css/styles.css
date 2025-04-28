@@ -1,0 +1,148 @@
+/* #231F20 */
+
+body, html{
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif
+}
+
+
+body{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 0px;
+}
+
+
+
+#logo{
+    width: 500px; 
+    height: 500px; 
+    fill: #000;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+#loading{
+    animation: fadeInUp 2500ms ease, zoomOut 1s 2500ms ease forwards;
+    margin-bottom: 0px;
+}
+
+.loginbtn, .signupbtn{
+    border: 0;
+    border-radius: 40px;
+    width: 150px;
+    height: 40px;
+    cursor: pointer;
+    margin: 5px;
+    margin-bottom: 30px;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 40px;
+}
+
+.signupbtn{
+    margin-bottom: 0px;
+    
+}
+
+#btn1ani{
+    animation: fadeInUpBtn 1s 3500ms ease forwards;
+    opacity: 0;
+    /* background-color: #F4DD81; */
+}
+
+#btn2ani{
+    animation: fadeInUpBtn 1s 4500ms ease forwards;
+    opacity: 0;
+    /* background-color: #F4DD81; */
+
+}
+
+.signuplink {
+    transform: translateY(-00%);
+    animation: fadeIn 2s 6500ms ease forwards;
+    opacity: 0;
+    margin: 10px 0 0 0; /* top margin only */
+    margin-bottom: 40px;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #666; /* softer, muted color */
+    text-align: center; /* center it under the buttons */
+    text-decoration: none; /* remove ugly underline */
+    letter-spacing: 0.5px; /* subtle spacing for polish */
+}
+
+.signuplink a{
+    color: inherit;
+}
+
+
+.button {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  
+  .button.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+
+
+@keyframes fadeInUp {
+    0% {
+      transform: translateY(15%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(10%);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUpBtn {
+    0% {
+      transform: translateY(-150%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(-200%);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoomOut {
+    0% {
+        transform: scale(1) translateY(10%);
+    }
+    100%{
+        transform: scale(0.8) translateY(0%);
+        
+    }
+    
+  }

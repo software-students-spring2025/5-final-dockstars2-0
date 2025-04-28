@@ -13,7 +13,9 @@ from models import db
 
 
 
-event_bp = Blueprint("event", __name__, template_folder="templates/event")
+#event_bp = Blueprint("event", __name__, template_folder="templates/event")
+event_bp = Blueprint("event", __name__, template_folder="event")
+
 
 @event_bp.route("/event/<event_id>/signup", methods=["GET", "POST"])
 @login_required
@@ -38,7 +40,7 @@ def signup_event(event_id):
 
 @event_bp.route("/create-event", methods=["GET", "POST"])
 @login_required
-def create_event_route():
+def add_event():
     if request.method == "POST":
         title = request.form.get("title")
         description = request.form.get("description")
@@ -54,16 +56,25 @@ def create_event_route():
             date=date,
             location=location
         )
-
-        _db.users.update_one(
-            {"_id": current_user._id},
+        '''
+        db.users.update_one(
+            {"_id": ObjectId(current_user._id)},
             {"$push": {"created_events": ObjectId(event_id)}}
         )
+        '''
+
+        db.users.update_one(
+        {"_id": ObjectId(current_user.id)},
+        )
+
 
         flash("Event created successfully!")
         return redirect(url_for("auth.explore"))
 
-    return render_template("create_event.html")
+    #return render_template("create_event.html")
+    #return render_template("add_event.html")
+    return render_template("event/add_event.html")
+
 
 @event_bp.route("/event/<event_id>/delete", methods=["POST"])
 @login_required
@@ -97,8 +108,8 @@ def edit_event(event_id):
 @event_bp.route("/event/<event_id>/plan", methods=["POST"])
 @login_required
 def plan_to_attend(event_id):
-    _db.users.update_one(
-        {"_id": current_user._id},
+    db.users.update_one(
+        {"_id": ObjectId(current_user.id)},
         {"$addToSet": {"planning_events": ObjectId(event_id)}}
     )
     flash("You are now planning to attend this event!")
@@ -107,8 +118,8 @@ def plan_to_attend(event_id):
 @event_bp.route("/event/<event_id>/maybe", methods=["POST"])
 @login_required
 def maybe_attend(event_id):
-    _db.users.update_one(
-        {"_id": current_user._id},
+    db.users.update_one(
+        {"_id": ObjectId(current_user.id)},
         {"$addToSet": {"maybe_events": ObjectId(event_id)}}
     )
     flash("You've marked this event as maybe attending.")

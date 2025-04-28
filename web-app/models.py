@@ -66,7 +66,7 @@ def create_event(user_id, title, description, image_url, date, location):
     user = db.users.find_one({"_id": ObjectId(user_id)})
     username = user["username"] if user else "Unknown"
 
-    db.events.insert_one({
+    result = db.events.insert_one({
         "title": title,
         "description": description,
         "image_url": image_url,
@@ -75,6 +75,9 @@ def create_event(user_id, title, description, image_url, date, location):
         "creator_id": user_id,
         "creator_username": username
     })
+
+    return result.inserted_id   
+
 
 
 def get_all_events():
