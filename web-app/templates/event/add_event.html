@@ -3,26 +3,28 @@
 {% block title %}Create New Event{% endblock %}
 
 {% block content %}
-<h1>Create a New Event</h1>
+<div class="add-event-container">
+    <h1 class="add-event-title">Create a New Event</h1>
 
-<form method="POST" action="{{ url_for('event.add_event') }}">
-    <label for="title">Event Title:</label><br>
-    <input type="text" id="title" name="title" required><br><br>
+    <form method="POST" action="{{ url_for('event.add_event') }}" enctype="multipart/form-data" class="add-event-form">
+        <label for="title">Event Title:</label>
+        <input type="text" id="title" name="title" required>
 
-    <label for="description">Event Description:</label><br>
-    <textarea id="description" name="description" rows="5" required></textarea><br><br>
+        <label for="description">Event Description:</label>
+        <textarea id="description" name="description" rows="5" required></textarea>
 
-    <label for="image_url">Image URL:</label><br>
-    <input type="text" id="image_url" name="image_url" required><br><br>
+        <label for="image">Upload Event Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
 
-    <label for="date">Date:</label><br>
-    <input type="date" id="date" name="date" required><br><br>
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
 
-    <label for="location">Location:</label><br>
-    <input type="text" id="location" name="location" required><br><br>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
 
-    <button type="submit">Post Event</button>
-</form>
+        <button type="submit" class="submit-event-button">Post Event</button>
+    </form>
 
-<a href="{{ url_for('explore.explore') }}">← Back to Explore</a>
+    <button class="back-button" onclick="history.back()">Back</button>
+</div>
 {% endblock %}
