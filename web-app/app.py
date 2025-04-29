@@ -6,7 +6,7 @@ from routes.auth_routes import auth_bp, init_auth
 from routes.event_routes import event_bp
 from routes.profile_routes import profile_bp
 from routes.explore_routes import explore_bp
-from flask_login import LoginManager, UserMixin
+from flask_login import LoginManager, UserMixin, current_user
 from datetime import datetime
 
 
@@ -46,6 +46,16 @@ def load_user(user_id):
         pswdHash=user_doc["pswdHash"],
         nickname=user_doc.get("nickname", user_doc["username"]),
     )
+
+@app.context_processor
+def inject_unread_notifs_count():
+    from models import get_notifications_for_user
+    if current_user.is_authenticated:
+        notifs = get_notifications_for_user(str(current_user.id))
+        unread_count = sum(1 for n in notifs if not n.get("seen", False))
+    else:
+        unread_count = 0
+    return dict(unread_notifs_count=unread_count)
 
 # Register blueprints
 app.register_blueprint(auth_bp)
