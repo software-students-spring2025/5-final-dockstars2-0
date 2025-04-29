@@ -143,3 +143,31 @@ def get_user_by_id(user_id):
         "profile_pic_url": user.get("profile_pic"),
         "profile_pic_id": str(user["profile_pic_id"]) if user.get("profile_pic_id") else None
     }
+
+def add_notification(user_id, type, event_id, message):
+    """Create a notification."""
+    db.notifications.insert_one({
+        "user_id": user_id,
+        "type": type,  # 'comment' or 'save'
+        "event_id": event_id,
+        "message": message,
+        "seen": False
+    })
+
+def get_notifications_for_user(user_id):
+    """Return a list of notifications for a user."""
+    notifs = db.notifications.find({"user_id": user_id}).sort("_id", -1)
+    return [{
+        "id": str(n["_id"]),
+        "type": n["type"],
+        "event_id": str(n["event_id"]),
+        "message": n["message"],
+        "seen": n.get("seen", False)
+    } for n in notifs]
+
+def mark_notification_seen(notification_id):
+    """Mark a notification as seen."""
+    db.notifications.update_one(
+        {"_id": ObjectId(notification_id)},
+        {"$set": {"seen": True}}
+    )

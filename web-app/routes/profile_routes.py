@@ -6,6 +6,8 @@ from models import (
     get_event_by_id,
     get_user_folders,
     get_user_by_id,
+    get_notifications_for_user, 
+    mark_notification_seen,
     db,
     fs
 )
@@ -57,7 +59,7 @@ def create_board():
         result = db.folders.insert_one(new_board)
         flash("Board created successfully!")
 
-        # return redirect(url_for("profile.view_board", board_id=str(result.inserted_id)))
+        return redirect(url_for("profile.view_board", board_id=str(result.inserted_id)))
 
     return render_template("profile/create_board.html")
 
@@ -173,3 +175,15 @@ def delete_board(board_id):
         flash("Not authorized.")
     return redirect(url_for("profile.profile"))
 
+
+@profile_bp.route("/notifications")
+@login_required
+def notifications():
+    notifs = get_notifications_for_user(str(current_user.id))
+    return render_template("notifications/notifications.html", notifs=notifs)
+
+@profile_bp.route("/notifications/seen/<notif_id>", methods=["POST"])
+@login_required
+def mark_seen(notif_id):
+    mark_notification_seen(notif_id)
+    return redirect(url_for("profile.notifications"))

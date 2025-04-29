@@ -1,5 +1,6 @@
 <!-- nav bar stuff will go here, can reuse in all other pages by just extending -->
 <!-- for example on how to use it, see login.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,11 +33,14 @@
                 <svg class="nav-icon">
                   <use href="{{ url_for('static', filename='images/icons.svg') }}#icon-bookmarks"></use>
                 </svg>
-              </a>              
-              <a href="{{ url_for('profile.profile')}}" class="nav-item">
+              </a>
+              <a href="{{ url_for('profile.notifications')}}" class="nav-item notif-link" style="position: relative;">
                 <svg class="nav-icon">
                   <use href="../static/images/icons.svg#icon-notifs"></use>
                 </svg>
+                {% if unread_notifs_count > 0 %}
+                  <span class="notif-badge">{{ unread_notifs_count }}</span>
+                {% endif %}
               </a>
               <a href="{{ url_for('event.add_event')}}" class="nav-item">
                 <svg class="nav-icon">
@@ -118,4 +122,18 @@
 </script>
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<style>
+    .notif-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: red;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      border-radius: 50%;
+      padding: 3px 6px;
+      line-height: 1;
+    }
+  </style>
 </html>
