@@ -1,5 +1,6 @@
+![Web App CI/CD](https://github.com/software-students-spring2025/5-final-dockstars2-0/actions/workflows/web-app.yml/badge.svg?branch=main)  ![Mongo CI/CD](https://github.com/software-students-spring2025/5-final-dockstars2-0/actions/workflows/mongo.yml/badge.svg?branch=main)
+
 # Yonder
-<!-- insert badges here -->
 
 ## Overview
 Yonder is an event discovery platform where users can browse, save, and organize events into boards.
