@@ -11,7 +11,7 @@ from datetime import datetime
 
 
 app = Flask(__name__)
-app.secret_key = "supersecret" # change later w env
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback-secret")
 app.config["APP_START"] = datetime.now()
 
 # connect to mongo
