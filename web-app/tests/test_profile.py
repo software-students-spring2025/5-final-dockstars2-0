@@ -19,9 +19,7 @@ def test_profile_requires_login(client):
 
 def test_create_board(client):
     with patch('routes.profile_routes.db.users.find_one') as mock_find_one, \
-         patch('routes.profile_routes.db.folders.insert_one') as mock_insert_one, \
-         patch('flask_login.utils._get_user') as mock_current_user, \
-         patch('flask_login.login_user') as mock_login_user:
+         patch('routes.profile_routes.db.folders.insert_one') as mock_insert_one:
 
         # Mock database user
         mock_find_one.return_value = {
@@ -34,27 +32,11 @@ def test_create_board(client):
             "attended_events": []
         }
 
-        # Mock current user
-        mock_current_user.return_value.is_authenticated = True
-        mock_current_user.return_value.id = "fakeid123"
+        # --- Set up a user in the session manually ---
+        with client.session_transaction() as session:
+            session['_user_id'] = "fakeid123"  # <- Flask-Login reads this!
 
-        # Mock login_user
-        mock_login_user.return_value = None
-
-        # Signup
-        client.post('/signup', data={
-            'username': 'boardtester',
-            'password': 'boardpassword',
-            'email': 'board@test.com'
-        }, follow_redirects=True)
-
-        # Login
-        login_response = client.post('/login', data={
-            'username': 'boardtester',
-            'password': 'boardpassword'
-        }, follow_redirects=True)
-
-        assert login_response.status_code == 200
+        # --- Now no need to mock _get_user or login_user at all! ---
 
         # Create board
         create_response = client.post(
@@ -66,5 +48,5 @@ def test_create_board(client):
 
         assert create_response.status_code in (302, 303)  # Expect redirect
 
-        # Verify the board was inserted
+        # ✅ Now the insert should happen
         mock_insert_one.assert_called_once()
