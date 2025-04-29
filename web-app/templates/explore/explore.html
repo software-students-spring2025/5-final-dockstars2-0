@@ -8,7 +8,7 @@
 <div class="explore-page">
     <!-- <h1 class="explore-title">Explore Events</h1> -->
 
-    <form method="GET" action="{{ url_for('explore.explore') }}" class="search-form" id="search-form">
+    <form method="GET" action="{{ url_for('explore.search_events') }}" class="search-form" id="search-form">
         <input type="text" name="q" class="search-input" placeholder="Search events..." value="{{ request.args.get('q', '') }}">
         <button type="submit" class="search-button" id="search-btn">
             <svg class="search-icon">
@@ -16,23 +16,28 @@
             </svg>
         </button>
     </form>
+
+    {% if query %}
+        <p class="search-results-text">Showing results for "{{ query }}"</p>
+        <button onclick="history.back()" class="no-events back-button" style="padding: 0px; margin: 0px;">Go back</button>
+    {% endif %}
     
     
 
+    {% if events %}
     <div class="event-grid">
         {% for event in events %}
             <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
                 <img src="{{ event.image_url }}" alt="{{ event.title }}" class="event-img">
-                <!-- <div class="event-info">
-                    <h3>{{ event.title }}</h3>
-                    <p>{{ event.date }}</p>
-                    <p>{{ event.location }}</p>
-                </div> -->
             </a>
-        {% else %}
-            <p class="no-events">No events found.</p>
         {% endfor %}
     </div>
+    {% else %}
+        <div class="event-grid">
+            <p class="no-events">No events found.</p>
+        </div>
+    {% endif %}
+
 </div>
 
 <script>
@@ -72,16 +77,12 @@
                 searchInput.classList.add("show")
                 searchInput.focus();
                 searchOpen = true;
-            } else {
-                // input is open already
-                if (searchInput.value.trim() === "") {
-                    e.preventDefault();
-                    searchInput.classList.remove("show");
-                    searchInput.blur();
-                    searchOpen = false;
-                }
-                // else: if there is text, allow normal submit
-            }
+            } else if (searchInput.value.trim() === "") {
+                e.preventDefault();
+                searchInput.classList.remove("show");
+                searchInput.blur();
+                searchOpen = false;
+            } 
         });
     });
 </script>    
