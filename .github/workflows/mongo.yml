@@ -1,0 +1,41 @@
+name: MongoDB CI/CD
+
+on:
+    push:
+      branches: [main, master]
+    pull_request:
+      types: [opened, closed]
+      branches: [main, master]
+
+jobs:
+  build-and-deploy-mongo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push MongoDB image
+        run: |
+          docker build -t ariangn/yonder:mongo ./mongo
+          docker push ariangn/yonder:mongo
+
+      - name: SSH into DigitalOcean and Deploy MongoDB
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DIGITALOCEAN_IP }}
+          username: ${{ secrets.DIGITALOCEAN_USER }}
+          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+          script: |
+            docker pull ariangn/yonder:mongo
+            docker stop yonder-mongo || true
+            docker rm yonder-mongo || true
+            docker volume create mongo-data || true
+            docker run -d --name yonder-mongo --network yonder-network -p 27017:27017 \
+              -v mongo-data:/data/db \
+              ariangn/yonder:mongo

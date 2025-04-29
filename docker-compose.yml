@@ -1,18 +1,31 @@
 services:
-  web-app:
-    build: ./web-app
-    ports:
-      - "8080:8080"
-    container_name: web-app
-    depends_on:
-      - mongo
-
-  mongo:
-    image: mongo
+  yonder-mongo:
+    build: ./mongo
+    container_name: yonder-mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    networks:
+      - yonder-network
+
+  yonder-webapp:
+    build: ./web-app
+    container_name: yonder-webapp
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://yonder-mongo:27017/yonder
+      - MONGO_DBNAME=yonder
+      - FLASK_SECRET_KEY=your-super-secret-key
+    depends_on:
+      - yonder-mongo
+    networks:
+      - yonder-network
 
 volumes:
   mongo-data:
+
+networks:
+  yonder-network:
+    driver: bridge

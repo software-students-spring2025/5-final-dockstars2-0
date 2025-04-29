@@ -9,9 +9,8 @@ load_dotenv()
 # connect to mongo
 mongo_uri = os.environ.get("MONGO_URI")
 client = MongoClient(mongo_uri)
-db = client[os.environ.get("MONGO_DBNAME", "test_db")]
+db = client['PinterestApp']
 fs = gridfs.GridFS(db)
-
 
 def get_event_by_id(event_id):
     data = db.events.find_one({"_id": ObjectId(event_id)})
