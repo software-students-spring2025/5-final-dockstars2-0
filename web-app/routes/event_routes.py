@@ -30,9 +30,20 @@ def signup_event(event_id):
         return redirect(url_for('profile.create_board'))
 
     save_event_to_folder(str(current_user.id), event_id, selected_board)
-    flash("Saved successfully!")
 
+# create notif
+    if str(current_user.id) != event["creator_id"]:
+        from models import add_notification
+        add_notification(
+            user_id=event["creator_id"],
+            type="save",
+            event_id=event_id,
+            message=f"{current_user.username} saved your event '{event['title']}'"
+        )
+
+    flash("Saved successfully!")
     return redirect(url_for("explore.event_detail", event_id=event_id))
+
 
 
 
@@ -157,10 +168,22 @@ def get_image(image_id):
 def add_comment(event_id):
     comment_text = request.form.get("comment_text")
     if comment_text:
+        event = get_event_by_id(event_id)
         db.comments.insert_one({
             "event_id": event_id,
             "user_id": str(current_user.id),
             "username": current_user.username,
             "text": comment_text
         })
+
+        # create notification
+        if str(current_user.id) != event["creator_id"]:
+            from models import add_notification
+            add_notification(
+                user_id=event["creator_id"],
+                type="comment",
+                event_id=event_id,
+                message=f"{current_user.username} commented on your event '{event['title']}'"
+            )
+
     return redirect(url_for("explore.event_detail", event_id=event_id))

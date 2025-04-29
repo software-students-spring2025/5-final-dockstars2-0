@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="notifications-container">
+    <h1>Notifications</h1>
+
+    {% if notifs %}
+        <ul class="notif-list">
+            {% for notif in notifs %}
+                <li class="{{ 'unread' if not notif.seen else '' }}">
+                    <a href="{{ url_for('explore.event_detail', event_id=notif.event_id) }}">
+                        {{ notif.message }}
+                    </a>
+                    {% if not notif.seen %}
+                        <form method="POST" action="{{ url_for('profile.mark_seen', notif_id=notif.id) }}" style="display: inline;">
+                            <button class="mark-btn" type="submit">Mark as read</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No notifications yet.</p>
+    {% endif %}
+</div>
+
+<style>
+.notifications-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+.notifications-container a {
+    color: inherit;
+
+}
+
+.notif-list {
+    list-style: none;
+    padding: 0;
+}
+
+.notif-list li {
+    margin-bottom: 1rem;
+    padding: 10px;
+    background: #f4f4f4;
+    border-radius: 8px;
+}
+
+.notif-list li.unread {
+    background: #eeeded;
+    font-weight: bold;
+}
+
+.mark-btn {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}
