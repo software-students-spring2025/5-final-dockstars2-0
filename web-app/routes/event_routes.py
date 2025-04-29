@@ -26,23 +26,37 @@ def signup_event(event_id):
         return redirect(url_for("explore.explore"))
 
     selected_board = request.form.get("board")
+
     if selected_board == "new":
-        return redirect(url_for('profile.create_board'))
+        # USER PICKED "NEW"
+        board_name = f"{event['title']} Board"  # default name or later make it custom
+        new_folder = db.folders.insert_one({
+            "user_id": str(current_user.id),
+            "name": board_name,
+            "event_ids": [ObjectId(event_id)]
+        })
 
-    save_event_to_folder(str(current_user.id), event_id, selected_board)
+        # after creating, redirect to view that new board
+        new_board_id = str(new_folder.inserted_id)
+        flash("Board created and event saved!")
+        return redirect(url_for("profile.view_board", board_id=new_board_id))
 
-# create notif
-    if str(current_user.id) != event["creator_id"]:
-        from models import add_notification
-        add_notification(
-            user_id=event["creator_id"],
-            type="save",
-            event_id=event_id,
-            message=f"{current_user.username} saved your event '{event['title']}'"
-        )
+    else:
+        # Save to existing folder
+        save_event_to_folder(str(current_user.id), event_id, selected_board)
 
-    flash("Saved successfully!")
-    return redirect(url_for("explore.event_detail", event_id=event_id))
+        # create notif if saving on someone else's event
+        if str(current_user.id) != event["creator_id"]:
+            from models import add_notification
+            add_notification(
+                user_id=event["creator_id"],
+                type="save",
+                event_id=event_id,
+                message=f"{current_user.username} saved your event '{event['title']}'"
+            )
+
+        flash("Saved successfully!")
+        return redirect(url_for("explore.event_detail", event_id=event_id))
 
 
 
