@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../../static/css/styles.css">
     <title>Document</title>
 </head>
-<body>
+<body class="landing-page">
 
     <div id="loading">
         <svg id="logo">
@@ -32,7 +32,7 @@ const logo = document.getElementById("logo")
 const loginbtn = document.querySelector(".loginbtn")
 const signupbtn = document.querySelector(".signupbtn")
 
-window.addEventListener("load", ()=>{
+document.addEventListener("DOMContentLoaded", ()=>{
     let colors = ["#EEBEDC", "#F4DD81", "#BDCBE9", "#BAC693"]
 
     randColor = colors[Math.floor(Math.random() * colors.length)];

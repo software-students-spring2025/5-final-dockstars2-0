@@ -10,10 +10,9 @@ from models import (
     update_event_by_id
 )
 from models import db
+import os
+from werkzeug.utils import secure_filename
 
-
-
-#event_bp = Blueprint("event", __name__, template_folder="templates/event")
 event_bp = Blueprint("event", __name__, template_folder="event")
 
 
@@ -21,7 +20,7 @@ event_bp = Blueprint("event", __name__, template_folder="event")
 @login_required
 def signup_event(event_id):
     if "user_id" not in session:
-        flash("You must be logged in to sign up for events.")
+        flash("You must be logged in to save events.")
         return redirect(url_for("auth.login"))
 
     event = get_event_by_id(event_id)
@@ -33,10 +32,11 @@ def signup_event(event_id):
             return redirect(url_for('profile.create_board'))
 
         save_event_to_folder(session["user_id"], event_id, selected_folder)
-        flash("Event saved successfully!")
+        flash("Saved successfully!")
         return redirect(url_for("profile.profile"))
 
     return render_template("event_signup.html", event=event, folders=folders)
+
 
 @event_bp.route("/create-event", methods=["GET", "POST"])
 @login_required
@@ -44,10 +44,20 @@ def add_event():
     if request.method == "POST":
         title = request.form.get("title")
         description = request.form.get("description")
-        image_url = request.form.get("image_url")
         date = request.form.get("date")
         location = request.form.get("location")
-        
+
+        # Handle image file
+        image_file = request.files.get("image")
+        if image_file and image_file.filename != '':
+            filename = secure_filename(image_file.filename)
+            upload_path = os.path.join("static", "uploads", filename)
+            os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+            image_file.save(upload_path)
+            image_url = "/" + upload_path  # store as relative path
+        else:
+            image_url = None
+
         event_id = create_event(
             user_id=str(current_user.id),
             title=title,
@@ -56,25 +66,15 @@ def add_event():
             date=date,
             location=location
         )
-        '''
-        db.users.update_one(
-            {"_id": ObjectId(current_user._id)},
-            {"$push": {"created_events": ObjectId(event_id)}}
-        )
-        '''
 
         db.users.update_one(
             {"_id": ObjectId(current_user.id)},
             {"$push": {"created_events": ObjectId(event_id)}}
         )
 
-
-
         flash("Event created successfully!")
-        return redirect(url_for("auth.explore"))
+        return redirect(url_for("explore.explore"))
 
-    #return render_template("create_event.html")
-    #return render_template("add_event.html")
     return render_template("event/add_event.html")
 
 
@@ -83,7 +83,8 @@ def add_event():
 def delete_event(event_id):
     delete_event_by_id(event_id)
     flash("Event deleted successfully!")
-    return redirect(url_for("auth.explore"))
+    return redirect(url_for("explore.explore"))
+
 
 @event_bp.route("/event/<event_id>/edit", methods=["GET", "POST"])
 @login_required
@@ -91,21 +92,31 @@ def edit_event(event_id):
     event = get_event_by_id(event_id)
     if not event:
         flash("Event not found.")
-        return redirect(url_for("auth.explore"))
+        return redirect(url_for("explore.explore"))
 
     if request.method == "POST":
         title = request.form.get("title")
         description = request.form.get("description")
-        image_url = request.form.get("image_url")
         date = request.form.get("date")
         location = request.form.get("location")
+
+        image_file = request.files.get("image")
+        if image_file and image_file.filename != '':
+            filename = secure_filename(image_file.filename)
+            upload_path = os.path.join("static", "uploads", filename)
+            os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+            image_file.save(upload_path)
+            image_url = "/" + upload_path
+        else:
+            image_url = event["image_url"]  # keep old image
 
         update_event_by_id(event_id, title, description, image_url, date, location)
 
         flash("Event updated successfully!")
-        return redirect(url_for("auth.explore"))
+        return redirect(url_for("explore.explore"))
 
     return render_template("edit_event.html", event=event)
+
 
 @event_bp.route("/event/<event_id>/plan", methods=["POST"])
 @login_required
@@ -114,8 +125,9 @@ def plan_to_attend(event_id):
         {"_id": ObjectId(current_user.id)},
         {"$addToSet": {"planning_events": ObjectId(event_id)}}
     )
-    flash("You are now planning to attend this event!")
+    flash("You're planning to attend this event!")
     return redirect(url_for("profile.profile"))
+
 
 @event_bp.route("/event/<event_id>/maybe", methods=["POST"])
 @login_required
@@ -124,11 +136,5 @@ def maybe_attend(event_id):
         {"_id": ObjectId(current_user.id)},
         {"$addToSet": {"maybe_events": ObjectId(event_id)}}
     )
-    flash("You've marked this event as maybe attending.")
+    flash("You've marked this as maybe attending.")
     return redirect(url_for("profile.profile"))
-
-
-
-
-
-

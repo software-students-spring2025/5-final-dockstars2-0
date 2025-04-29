@@ -5,10 +5,15 @@ body, html{
     font-family: Arial, Helvetica, sans-serif
 }
 
-
-body{
+body, html {
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 0;
+}
+
+/* ============= LANDING PAGE ONLY ============= */
+body.landing-page {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -81,10 +86,10 @@ body{
     margin-bottom: 40px;
     font-size: 14px;
     font-family: Arial, Helvetica, sans-serif;
-    color: #666; /* softer, muted color */
-    text-align: center; /* center it under the buttons */
-    text-decoration: none; /* remove ugly underline */
-    letter-spacing: 0.5px; /* subtle spacing for polish */
+    color: #888; 
+    text-align: center; 
+    text-decoration: none; 
+    letter-spacing: 0.5px; 
 }
 
 .signuplink a{
@@ -238,11 +243,17 @@ body{
     transform: scale(1.1);
   }
   
-  
   .main-content {
-  margin-left: 80px;
-  padding: 20px;
+    margin-left: 80px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* center horizontally */
+    justify-content: flex-start; /* align top */
+    min-height: 100vh; /* make sure it fills vertically */
+    box-sizing: border-box;
 }
+
 
 /* ============= LOGIN STYLES ============= */
 .login-container {
@@ -315,3 +326,377 @@ body{
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ============= EXPLORE STYLES ============= */
+
+.search-form {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center;
+    gap: 10px;
+    z-index: 999; 
+}
+
+.search-icon {
+    width: 23px;
+    height: 23px;
+    fill: #FFF;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .search-icon:hover {
+    transform: scale(1.1);
+  }
+
+
+
+.search-input {
+    flex: 1;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid #888;
+    padding: 0 20px;
+    font-size: 16px;
+    background-color: #f8f8f8;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #BDCBE9;
+}
+
+.search-button {
+    height: 40px;
+    width: 40px;
+    padding: 0px;
+    border: none;
+    border-radius: 50%;
+    background-color: #BAC693;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+.search-button:hover {
+    background-color: #000;
+}
+
+.event-grid {
+    width: 100%;
+    max-width: 1200px;
+    column-count: 5; /* desktop default */
+    column-gap: 15px;
+    padding: 20px 0;
+}
+
+.event-card {
+    break-inside: avoid;
+    margin-bottom: 15px;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+.event-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: left;
+    color: #000;
+}
+
+
+.event-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.no-events {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+    font-size: 18px;
+    margin-top: 50px;
+}
+
+.search-input {
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.search-input.show {
+    display: block;
+}
+
+/* ============= RESPONSIVE EXPLORE GRID ============= */
+
+@media (max-width: 1200px) {
+    .event-grid {
+        column-count: 4;
+    }
+}
+
+@media (max-width: 900px) {
+    .event-grid {
+        column-count: 3;
+    }
+}
+
+@media (max-width: 600px) {
+    .event-grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 400px) {
+    .event-grid {
+        column-count: 1;
+    }
+}
+
+/* ============= EVENT DETAILS ============= */
+.event-details-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.event-card-large {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.event-img-large {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.event-info-box {
+    padding: 20px;
+}
+
+.event-creator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.creator-pic-placeholder {
+    width: 40px;
+    height: 40px;
+    background-color: #ddd;
+    border-radius: 50%;
+}
+
+.creator-name {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.event-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.btn-circle {
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.btn-tag {
+    background-color: #BDCBE9;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.event-desc {
+    margin: 20px 0;
+    line-height: 1.5;
+    color: #333;
+}
+
+.event-meta {
+    display: flex;
+    gap: 30px;
+    color: #666;
+    font-size: 14px;
+}
+
+.comment-section h2 {
+    margin-bottom: 10px;
+}
+
+.comment-section ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.comment-section li {
+    margin-bottom: 10px;
+    background: #f5f5f5;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+textarea[name="comment_text"] {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+.comment-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #EEBEDC;
+    color: white; 
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.event-creator-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.event-creator-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.save-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bookmark-icon {
+    width: 22px;
+    height: 22px;
+    fill: #BDCBE9;
+    transition: transform 0.2s ease;
+}
+
+.bookmark-icon:hover {
+    transform: scale(1.2);
+    fill: #000;
+}
+
+.back-button {
+    border: none;
+    background: none;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: color 0.2s ease;
+}
+
+.back-button:hover {
+    color: #888;
+}
+
+/* ============= ADD EVENT ============= */
+
+.add-event-container {
+    margin-left: 80px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-event-title {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.add-event-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.add-event-form input,
+.add-event-form textarea {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.add-event-form input:focus,
+.add-event-form textarea:focus {
+    border-color: #BDCBE9;
+    outline: none;
+}
+
+.submit-event-button {
+    background-color: #BAC693;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-event-button:hover {
+    background-color: #000;
+}
+

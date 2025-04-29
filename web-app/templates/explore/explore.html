@@ -2,34 +2,88 @@
 
 {% extends "base.html" %}
 
-{% block title %}Explore Events{% endblock %}
+{% block title %}Explore{% endblock %}
 
 {% block content %}
-<h1>Explore Events</h1>
+<div class="explore-page">
+    <!-- <h1 class="explore-title">Explore Events</h1> -->
 
-<a href="{{ url_for('event.add_event') }}">
-    <button>Create New Event</button>
-</a>
+    <form method="GET" action="{{ url_for('explore.search_events') }}" class="search-form" id="search-form">
+        <input type="text" name="q" class="search-input" placeholder="Search events..." value="{{ request.args.get('q', '') }}">
+        <button type="submit" class="search-button" id="search-btn">
+            <svg class="search-icon">
+                <use href="../../static/images/icons.svg#icon-search"></use>
+            </svg>
+        </button>
+    </form>
 
+    {% if query %}
+        <p class="search-results-text">Showing results for "{{ query }}"</p>
+        <button onclick="history.back()" class="no-events back-button" style="padding: 0px; margin: 0px;">Go back</button>
+    {% endif %}
+    
+    
 
-<form method="GET" action="{{ url_for('explore.explore') }}" class="search-form">
-    <input type="text" name="q" placeholder="Search events..." value="{{ request.args.get('q', '') }}">
-    <button type="submit">Search</button>
-</form>
-
-<div class="event-grid">
-    {% for event in events %}
-        <div class="event-card">
-            <img src="{{ event.image_url }}" alt="{{ event.title }}" class="event-img">
-            <h3>{{ event.title }}</h3>
-            <p>{{ event.date }}</p>
-            <p>{{ event.location }}</p>
-            <a href="{{ url_for('explore.event_detail', event_id=event.id) }}">View Details</a>
-
-
-        </div>
+    {% if events %}
+    <div class="event-grid">
+        {% for event in events %}
+            <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
+                <img src="{{ event.image_url }}" alt="{{ event.title }}" class="event-img">
+            </a>
+        {% endfor %}
+    </div>
     {% else %}
-        <p>No events found.</p>
-    {% endfor %}
+        <div class="event-grid">
+            <p class="no-events">No events found.</p>
+        </div>
+    {% endif %}
+
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const colors = ["#EEBEDC", "#F4DD81", "#BDCBE9", "#BAC693"]
+    
+        const searchInput = document.querySelector(".search-input")
+        const searchButton = document.getElementById("search-btn")
+        const searchForm = document.getElementById("search-form")
+    
+        const randomFocusColor = colors[Math.floor(Math.random() * colors.length)];
+        const randomButtonColor = colors[Math.floor(Math.random() * colors.length)];
+    
+        searchButton.style.backgroundColor = randomButtonColor;
+    
+        searchInput.addEventListener("focus", () => {
+            searchInput.style.borderColor = randomFocusColor
+        });
+        searchInput.addEventListener("blur", () => {
+            searchInput.style.borderColor = "#888"
+        });
+    
+        searchButton.addEventListener("mouseenter", () => {
+            searchButton.style.transition = "background-color 0.3s ease";
+            searchButton.style.backgroundColor = "#000"
+        });
+    
+        searchButton.addEventListener("mouseleave", () => {
+            searchButton.style.backgroundColor = randomButtonColor;
+        });
+    
+        let searchOpen = false;
+    
+        searchButton.addEventListener("click", (e) => {
+            if (!searchOpen) {
+                e.preventDefault();
+                searchInput.classList.add("show")
+                searchInput.focus();
+                searchOpen = true;
+            } else if (searchInput.value.trim() === "") {
+                e.preventDefault();
+                searchInput.classList.remove("show");
+                searchInput.blur();
+                searchOpen = false;
+            } 
+        });
+    });
+</script>    
 {% endblock %}
