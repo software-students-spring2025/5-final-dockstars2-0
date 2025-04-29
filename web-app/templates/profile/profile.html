@@ -1,96 +1,214 @@
 {% extends "base.html" %}
 
-{% block title %}Your Profile{% endblock %}
+{% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
-<div class="profile-header">
-    <a href="{{ url_for('profile.settings') }}" class="settings-btn">
-        Settings
-   </a>
-    <img src="{{ user.profile_pic_url or '/static/default-profile.png' }}" alt="Profile Picture" class="profile-pic">
-    <h1>{{ user.username }}</h1>
-    <div class="create-event-button">
-        <a href="{{ url_for('event.add_event') }}">
-            <button>Create New Event</button>
-        </a>
+<div class="profile-container">
+  <div class="profile-header-bar">
+    <div class="profile-user-info">
+      <img src="{{ url_for('event.get_image', image_id=user.profile_pic_id) if user.profile_pic_id else (user.profile_pic_url or '/static/default-profile.png') }}" class="profile-avatar">
+      <div>
+        <h2>{{ user.username }}</h2>
+        <p>{{ created_events|length }} posts · {{ folders|length }} boards</p>
+      </div>
     </div>
-    
+    <div class="profile-actions">
+        <a href="{{ url_for('profile.settings')}}" class="nav-item" style="display: inline-block;">
+            <svg class="nav-icon">
+              <use href="../static/images/icons.svg#icon-settings"></use>
+            </svg>
+          </a>
+      <a href="{{ url_for('event.add_event')}}" class="nav-item" style="display: inline-block;">
+        <svg class="nav-icon">
+          <use href="../static/images/icons.svg#icon-addbutton"></use>
+        </svg>
+      </a>
+    </div>
+  </div>
 
-    
-</div>
+  <div class="profile-tabs">
+    <button class="tab active" onclick="showTab('created')">Created</button>
+    <button class="tab" onclick="showTab('going')">Going</button>
+    <button class="tab" onclick="showTab('maybe')">Maybe</button>
+    <button class="tab" onclick="showTab('attended')">Been</button>
+    <button class="tab" onclick="showTab('boards')">Boards</button>
+  </div>
 
-<hr>
-
-<h2>Created Events</h2>
-<div class="events-timeline">
-    {% for event in created_events %}
-        <div class="event-card">
-            <h3>{{ event.title }}</h3>
-            <p>{{ event.date }} | {{ event.location }}</p>
-            <a href="{{ url_for('explore.event_detail', event_id=event.id) }}">View Event</a>
-        </div>
+  <div id="created" class="tab-section active">
+    {% if created_events %}
+      <div class="event-grid">
+        {% for event in created_events %}
+          <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
+            <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" alt="{{ event.title }}" class="event-img">
+          </a>
+        {% endfor %}
+      </div>
     {% else %}
-        <p>No created events.</p>
-    {% endfor %}
-</div>
+      <p class="empty-note">No created events yet.</p>
+    {% endif %}
+  </div>
 
-<hr>
-
-<h2>Planning to Attend</h2>
-<div class="events-timeline">
-    {% for event in planning_events %}
-        <div class="event-card">
-            <h3>{{ event.title }}</h3>
-            <p>{{ event.date }} | {{ event.location }}</p>
-            <a href="{{ url_for('explore.event_detail', event_id=event.id) }}">View Event</a>
-        </div>
+  <div id="going" class="tab-section">
+    {% if planning_events %}
+      <div class="event-grid">
+        {% for event in planning_events %}
+          <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
+            <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" alt="{{ event.title }}" class="event-img">
+          </a>
+        {% endfor %}
+      </div>
     {% else %}
-        <p>No upcoming plans.</p>
-    {% endfor %}
-</div>
+      <p class="empty-note">No upcoming plans.</p>
+    {% endif %}
+  </div>
 
-<hr>
-
-<h2>Maybe Attending</h2>
-<div class="events-timeline">
-    {% for event in maybe_events %}
-        <div class="event-card">
-            <h3>{{ event.title }}</h3>
-            <p>{{ event.date }} | {{ event.location }}</p>
-            <a href="{{ url_for('explore.event_detail', event_id=event.id) }}">View Event</a>
-        </div>
+  <div id="maybe" class="tab-section">
+    {% if maybe_events %}
+      <div class="event-grid">
+        {% for event in maybe_events %}
+          <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
+            <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" alt="{{ event.title }}" class="event-img">
+          </a>
+        {% endfor %}
+      </div>
     {% else %}
-        <p>No maybe attending events.</p>
-    {% endfor %}
-</div>
+      <p class="empty-note">No maybe attending events.</p>
+    {% endif %}
+  </div>
 
-<hr>
-
-<h2>Attended Events</h2>
-<div class="events-timeline">
-    {% for event in attended_events %}
-        <div class="event-card">
-            <h3>{{ event.title }}</h3>
-            <p>{{ event.date }} | {{ event.location }}</p>
-            <a href="{{ url_for('explore.event_detail', event_id=event.id) }}">View Event</a>
-        </div>
+  <div id="attended" class="tab-section">
+    {% if attended_events %}
+      <div class="event-grid">
+        {% for event in attended_events %}
+          <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
+            <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" alt="{{ event.title }}" class="event-img">
+          </a>
+        {% endfor %}
+      </div>
     {% else %}
-        <p>No attended events yet.</p>
-    {% endfor %}
-</div>
+      <p class="empty-note">No attended events yet.</p>
+    {% endif %}
+  </div>
 
-<hr>
-
-<h2>Your Boards</h2>
-<div class="boards-gallery">
-    {% for board in folders %}
-        <div class="board-card">
-            <h4>{{ board.name }}</h4>
-        </div>
+  <div id="boards" class="tab-section">
+    {% if folders %}
+      <div class="event-grid">
+        {% for board in folders %}
+          <div class="event-card board-card">{{ board.name }}</div>
+        {% endfor %}
+      </div>
     {% else %}
-        <p>No boards yet. Save some events to start a collection!</p>
-    {% endfor %}
+      <p class="empty-note">No boards yet. Save some events to start a collection!</p>
+    {% endif %}
+  </div>
 </div>
 
+<style>
+  .profile-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .profile-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .profile-user-info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .profile-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .profile-actions a {
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+    text-decoration: none;
+    color: black;
+  }
+
+  .profile-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    background: none;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.25rem 0.75rem;
+    border-bottom: 2px solid transparent;
+  }
+
+  .tab.active {
+    border-bottom-color: black;
+  }
+
+  .tab-section {
+    display: none;
+    width: 100%;
+  }
+
+  .tab-section.active {
+    display: block;
+  }
+
+  .event-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .event-card {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .event-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    display: block;
+    border-radius: 12px;
+  }
+
+  .board-card {
+    background: #f4f4f4;
+    padding: 1rem;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 12px;
+  }
+
+  .empty-note {
+    text-align: center;
+    color: #aaa;
+    margin-top: 2rem;
+  }
+</style>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelector(`[onclick="showTab('${id}')"]`).classList.add('active');
+  }
+</script>
 {% endblock %}
-

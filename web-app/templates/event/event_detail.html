@@ -6,7 +6,7 @@
     <button class="back-button" onclick="history.back()">Back</button>
 
     <div class="event-card-large">
-        <img src="{{ event.image_url }}" alt="Event image" class="event-img-large">
+        <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" alt="Event image" class="event-img-large">
         <div class="event-info-box">
             <div class="event-creator-row">
                 <div class="event-creator-left">
