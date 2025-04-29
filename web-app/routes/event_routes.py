@@ -107,10 +107,17 @@ def edit_event(event_id):
             filename = secure_filename(image_file.filename)
             image_id = fs.put(image_file, filename=filename)
 
-        update_event_by_id(event_id, title, description, image_id, date, location)
+        update_event_by_id(
+        event_id,
+        title=title,
+        description=description,
+        image_id=event["image_id"],  # keep existing
+        date=date,
+        location=event["location"]   # keep existing
+        )
 
         flash("Event updated successfully!")
-        return redirect(url_for("explore.explore"))
+        return redirect(url_for("explore.event_detail", event_id=event_id))
 
     return render_template("edit_event.html", event=event)
 
