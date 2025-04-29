@@ -1,6 +1,7 @@
 import sys, os, pytest
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from unittest.mock import patch
+from flask_login import login_user
 
 
 from app import app
@@ -17,10 +18,12 @@ def test_profile_requires_login(client):
     assert response.status_code == 200
     assert b"Login" in response.data
 
+
 def test_create_board(client):
     with patch('models.db.users.find_one') as mock_find_one, \
          patch('models.db.folders.insert_one') as mock_insert_one, \
-         patch('flask_login.utils._get_user') as mock_current_user:
+         patch('flask_login.utils._get_user') as mock_current_user, \
+         patch('flask_login.login_user') as mock_login_user:
 
         # Mock database user
         mock_find_one.return_value = {
@@ -33,8 +36,12 @@ def test_create_board(client):
             "attended_events": []
         }
 
-        # Mock logged-in user
+        # Mock logged-in user (after login)
+        mock_current_user.return_value.is_authenticated = True
         mock_current_user.return_value.id = "fakeid123"
+
+        # Mock login_user (so login doesn't fail silently)
+        mock_login_user.return_value = None  # we don't need it to return anything
 
         # Signup
         client.post('/signup', data={
