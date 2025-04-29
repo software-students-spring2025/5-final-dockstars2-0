@@ -17,7 +17,7 @@ app.config["APP_START"] = datetime.now()
 # connect to mongo
 mongo_uri = os.environ.get("MONGO_URI")
 client = MongoClient(mongo_uri)
-db = client[os.environ.get("MONGO_DBNAME")]
+db = client[os.environ.get("MONGO_DBNAME", "test_db")]
 
 login_manager = LoginManager()
 login_manager.init_app(app)
