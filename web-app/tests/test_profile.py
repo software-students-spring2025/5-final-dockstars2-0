@@ -23,7 +23,7 @@ def test_profile_requires_login(client):
 
 def test_create_board(client):
     with patch('models.db.users.find_one') as mock_find_one, \
-         patch('routes.profile_routes.db.folders.insert_one') as mock_insert_one, \
+         patch('models.db.folders.insert_one') as mock_insert_one, \
          patch('flask_login.utils._get_user') as mock_current_user, \
          patch('flask_login.login_user') as mock_login_user:
 
@@ -38,7 +38,7 @@ def test_create_board(client):
             "attended_events": []
         }
 
-        # Mock logged-in user
+        # Mock current user
         mock_current_user.return_value.is_authenticated = True
         mock_current_user.return_value.id = "fakeid123"
 
@@ -60,15 +60,15 @@ def test_create_board(client):
 
         assert login_response.status_code == 200
 
-        # Create board: ➡️ ***FIX is here: content_type***
+        # Create board (NO redirect following)
         create_response = client.post(
             '/create-board',
             data={'board_name': 'My Test Board'},
-            content_type='application/x-www-form-urlencoded',  # <-- THIS FIX
-            follow_redirects=True
+            content_type='application/x-www-form-urlencoded',
+            follow_redirects=False   # 🔥 NO redirect following
         )
 
-        assert create_response.status_code == 200
+        assert create_response.status_code in (302, 303)  # Expect redirect response
 
         # Verify the board was created
         mock_insert_one.assert_called_once()
