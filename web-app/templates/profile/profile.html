@@ -13,8 +13,16 @@
       </div>
     </div>
     <div class="profile-actions">
-      <a href="{{ url_for('profile.settings') }}">⚙️</a>
-      <a href="{{ url_for('event.add_event') }}">➕</a>
+        <a href="{{ url_for('profile.settings')}}" class="nav-item" style="display: inline-block;">
+            <svg class="nav-icon">
+              <use href="../static/images/icons.svg#icon-settings"></use>
+            </svg>
+          </a>
+      <a href="{{ url_for('event.add_event')}}" class="nav-item" style="display: inline-block;">
+        <svg class="nav-icon">
+          <use href="../static/images/icons.svg#icon-addbutton"></use>
+        </svg>
+      </a>
     </div>
   </div>
 
