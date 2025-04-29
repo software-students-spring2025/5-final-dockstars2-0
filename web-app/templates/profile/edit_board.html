@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Board{% endblock %}
+
+{% block content %}
+<div class="edit-board-container">
+  <h1>Edit Board</h1>
+  <form method="POST">
+    <label for="name">Board Name</label>
+    <input type="text" id="name" name="name" value="{{ board.name }}" required>
+
+    <label for="description">Description (optional)</label>
+    <textarea id="description" name="description">{{ board.description }}</textarea>
+
+    <button type="submit">Save Changes</button>
+  </form>
+
+  <button onclick="history.back()" class="back-btn">← Cancel</button>
+</div>
+
+<style>
+  .edit-board-container {
+    max-width: 500px;
+    margin: 4rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    text-align: center;
+  }
+
+  .edit-board-container h1 {
+    font-size: 28px;
+    margin-bottom: 2rem;
+  }
+
+  .edit-board-container label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin: 1rem 0 0.5rem;
+  }
+
+  .edit-board-container input,
+  .edit-board-container textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    font-size: 16px;
+  }
+
+  .edit-board-container button[type="submit"] {
+    margin-top: 2rem;
+    background-color: #BAC693;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    font-weight: bold;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .edit-board-container .back-btn {
+    background: none;
+    border: none;
+    color: #666;
+    text-decoration: underline;
+    font-size: 14px;
+    margin-top: 1rem;
+    cursor: pointer;
+  }
+</style>
+{% endblock %}
