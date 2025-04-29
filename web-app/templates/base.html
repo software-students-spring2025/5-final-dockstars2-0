@@ -28,11 +28,11 @@
                   <use href="../static/images/icons.svg#icon-profile"></use>
                 </svg>
               </a>
-              <a href="{{ url_for('profile.profile')}}" class="nav-item">
+              <a href="{{ url_for('profile.profile') }}#boards" class="nav-item">
                 <svg class="nav-icon">
-                  <use href="../static/images/icons.svg#icon-bookmarks"></use>
+                  <use href="{{ url_for('static', filename='images/icons.svg') }}#icon-bookmarks"></use>
                 </svg>
-              </a>
+              </a>              
               <a href="{{ url_for('profile.profile')}}" class="nav-item">
                 <svg class="nav-icon">
                   <use href="../static/images/icons.svg#icon-notifs"></use>
