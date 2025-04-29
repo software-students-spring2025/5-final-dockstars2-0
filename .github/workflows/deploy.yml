@@ -1,0 +1,37 @@
+name: Build and Deploy Yonder to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/yonder:latest ./web-app
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/yonder:latest
+
+      - name: SSH into DigitalOcean and Deploy
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DIGITALOCEAN_IP }}
+          username: ${{ secrets.DIGITALOCEAN_USER }}
+          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/yonder:latest
+            docker stop yonder || true
+            docker rm yonder || true
+            docker run -d --name yonder -p 80:5000 ${{ secrets.DOCKERHUB_USERNAME }}/yonder:latest

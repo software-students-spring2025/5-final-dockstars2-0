@@ -1,3 +1,15 @@
-# Final Project
+# Yonder
+<!-- insert badges here -->
 
-An exercise to put to practice software development teamwork, subsystem communication, containers, deployment, and CI/CD pipelines. See [instructions](./instructions.md) for details.
+## Overview
+This application allows users to explore and save collections of upcoming events they wish to attend. Think Pinterest, but for events! 
+
+## Features
+
+
+
+## Team
+* [Ajok Thon](https://github.com/ajokt123)
+* [Aria Nguyen](https://github.com/ariangn)
+* [Kahmeeah Obey](https://github.com/kahmeeah)
+* [Nyjur Majok](https://github.com/nyjur1)
