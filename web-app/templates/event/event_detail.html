@@ -8,7 +8,9 @@
     <div class="event-card-large">
         <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" alt="Event image" class="event-img-large">
         <div class="event-info-box">
+            
             <div class="event-creator-row">
+                
                 <div class="event-creator-left">
                     <a href="{{ url_for('profile.user_profile', user_id=event.creator_id) }}" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
                         <!-- {% if event.creator_pic_id %}
@@ -24,6 +26,8 @@
                       <use href="../../static/images/icons.svg#icon-bookmarks"></use>
                     </svg>
                   </button>
+                  
+
                   
             </div>
 
@@ -43,6 +47,10 @@
                 <span>{{ event.date }}</span>
                 <span>{{ event.location }}</span>
             </div>
+            <br>
+            {% if current_user.id == event.creator_id %}
+    <a class="edit-button" onclick="openModal('editEventModal')" style="color: #fff;">Edit</a>
+{% endif %}
         </div>
     </div>
 
@@ -88,6 +96,40 @@
       </form>
     </div>
 </div>
+
+<div id="editEventModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('editEventModal')">&times;</span>
+      <h2>Edit Event</h2>
+  
+      <form method="POST" action="{{ url_for('event.edit_event', event_id=event.id) }}">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" name="title" id="title" value="{{ event.title }}" required>
+        </div>
+  
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea name="description" id="description" rows="3">{{ event.description }}</textarea>
+        </div>
+  
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="date" name="date" id="date" value="{{ event.date }}">
+        </div>
+  
+        <div class="modal-actions">
+          <button type="submit" class="btn-green full-width">Save Changes</button>
+        </div>
+      </form>
+  
+      <form method="POST" action="{{ url_for('event.delete_event', event_id=event.id) }}"
+            onsubmit="return confirm('Are you sure you want to delete this event?');">
+        <button type="submit" class="btn-red full-width" style="background-color: #F16969;">Delete Event</button>
+      </form>
+    </div>
+  </div>
+  
   
 <script>
     function openSaveModal() {
@@ -101,10 +143,35 @@
       if (event.target == modal) {
         modal.style.display = "none";
       }
+
+      const modal2 = document.getElementById("editEventModal");
+  if (event.target === modal2) {
+    modal2.style.display = "none";
+  }
     }
+
+    function openModal(id) {
+  document.getElementById(id).style.display = "block";
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+
     </script>
 
 <style>
+
+.edit-button {
+  background-color: #EEBEDC;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
 
 .event-details-container a {
     color: inherit;
@@ -201,6 +268,47 @@
   font-weight: bold;
   cursor: pointer;
   color: #333;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+}
+
+.btn-green {
+  background-color: #BAC693;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-red {
+  background-color: #F16969;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.full-width {
+  width: 100%;
+  display: block;
+  margin-top: 10px;
+  font-size: 16px;
+  padding: 12px;
 }
 
 </style>
