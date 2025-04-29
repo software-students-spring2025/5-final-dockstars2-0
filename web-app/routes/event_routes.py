@@ -64,8 +64,10 @@ def add_event():
         '''
 
         db.users.update_one(
-        {"_id": ObjectId(current_user.id)},
+            {"_id": ObjectId(current_user.id)},
+            {"$push": {"created_events": ObjectId(event_id)}}
         )
+
 
 
         flash("Event created successfully!")

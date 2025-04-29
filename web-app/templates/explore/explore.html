@@ -7,6 +7,11 @@
 {% block content %}
 <h1>Explore Events</h1>
 
+<a href="{{ url_for('event.add_event') }}">
+    <button>Create New Event</button>
+</a>
+
+
 <form method="GET" action="{{ url_for('explore.explore') }}" class="search-form">
     <input type="text" name="q" placeholder="Search events..." value="{{ request.args.get('q', '') }}">
     <button type="submit">Search</button>

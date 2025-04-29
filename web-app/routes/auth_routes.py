@@ -94,7 +94,14 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        if not username or not password:
+            flash("Username and password are required.")
+            return redirect(url_for("auth.login"))
+
+
         #print("POST received:", username)
+
+        session.clear()
 
         # Look up the user in the database
         userDoc = _db.users.find_one({"username": username})
