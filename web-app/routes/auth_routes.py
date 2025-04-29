@@ -117,8 +117,7 @@ def login():
             return redirect(url_for("explore.explore"))  
         else:
             #print("Login failed!")
-            flash("Invalid username or password. Please try again.")
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("auth.login", error="true"))
 
     return render_template("auth/login.html")
 
