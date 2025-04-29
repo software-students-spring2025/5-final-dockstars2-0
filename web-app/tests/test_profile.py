@@ -20,6 +20,7 @@ def test_profile_requires_login(client):
 
 
 
+
 def test_create_board(client):
     with patch('models.db.users.find_one') as mock_find_one, \
          patch('routes.profile_routes.db.folders.insert_one') as mock_insert_one, \
@@ -41,7 +42,7 @@ def test_create_board(client):
         mock_current_user.return_value.is_authenticated = True
         mock_current_user.return_value.id = "fakeid123"
 
-        # Mock login_user (so login doesn't fail silently)
+        # Mock login_user
         mock_login_user.return_value = None
 
         # Signup
@@ -59,10 +60,13 @@ def test_create_board(client):
 
         assert login_response.status_code == 200
 
-        # Create board
-        create_response = client.post('/create-board', data={
-            'board_name': 'My Test Board'
-        }, follow_redirects=True)
+        # Create board: ➡️ ***FIX is here: content_type***
+        create_response = client.post(
+            '/create-board',
+            data={'board_name': 'My Test Board'},
+            content_type='application/x-www-form-urlencoded',  # <-- THIS FIX
+            follow_redirects=True
+        )
 
         assert create_response.status_code == 200
 
