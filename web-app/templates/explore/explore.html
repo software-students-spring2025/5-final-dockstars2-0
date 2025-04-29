@@ -28,7 +28,7 @@
     <div class="event-grid">
         {% for event in events %}
             <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
-                <img src="{{ event.image_url }}" alt="{{ event.title }}" class="event-img">
+                <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" alt="{{ event.title }}" class="event-img">
             </a>
         {% endfor %}
     </div>

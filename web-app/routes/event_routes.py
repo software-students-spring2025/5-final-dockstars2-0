@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, send_file
 from flask_login import login_required, current_user
 from bson.objectid import ObjectId
 from models import (
@@ -7,10 +7,11 @@ from models import (
     save_event_to_folder,
     create_event, 
     delete_event_by_id,
-    update_event_by_id
+    update_event_by_id,
+    db,
+    fs
 )
-from models import db
-import os
+import io
 from werkzeug.utils import secure_filename
 
 event_bp = Blueprint("event", __name__, template_folder="event")
@@ -46,25 +47,25 @@ def add_event():
         description = request.form.get("description")
         date = request.form.get("date")
         location = request.form.get("location")
+        latitude = request.form.get("latitude")
+        longitude = request.form.get("longitude")
 
-        # Handle image file
+        # handle image file
         image_file = request.files.get("image")
+        image_id = None
         if image_file and image_file.filename != '':
             filename = secure_filename(image_file.filename)
-            upload_path = os.path.join("static", "uploads", filename)
-            os.makedirs(os.path.dirname(upload_path), exist_ok=True)
-            image_file.save(upload_path)
-            image_url = "/" + upload_path  # store as relative path
-        else:
-            image_url = None
+            image_id = fs.put(image_file, filename=filename)
 
         event_id = create_event(
             user_id=str(current_user.id),
             title=title,
             description=description,
-            image_url=image_url,
+            image_id=image_id,
             date=date,
-            location=location
+            location=location,
+            latitude=latitude,
+            longitude=longitude
         )
 
         db.users.update_one(
@@ -76,6 +77,7 @@ def add_event():
         return redirect(url_for("explore.explore"))
 
     return render_template("event/add_event.html")
+
 
 
 @event_bp.route("/event/<event_id>/delete", methods=["POST"])
@@ -101,16 +103,12 @@ def edit_event(event_id):
         location = request.form.get("location")
 
         image_file = request.files.get("image")
+        image_id = event["image_id"]  # default to existing
         if image_file and image_file.filename != '':
             filename = secure_filename(image_file.filename)
-            upload_path = os.path.join("static", "uploads", filename)
-            os.makedirs(os.path.dirname(upload_path), exist_ok=True)
-            image_file.save(upload_path)
-            image_url = "/" + upload_path
-        else:
-            image_url = event["image_url"]  # keep old image
+            image_id = fs.put(image_file, filename=filename)
 
-        update_event_by_id(event_id, title, description, image_url, date, location)
+        update_event_by_id(event_id, title, description, image_id, date, location)
 
         flash("Event updated successfully!")
         return redirect(url_for("explore.explore"))
@@ -138,3 +136,12 @@ def maybe_attend(event_id):
     )
     flash("You've marked this as maybe attending.")
     return redirect(url_for("profile.profile"))
+
+# serve images
+@event_bp.route("/image/<image_id>")
+def get_image(image_id):
+    try:
+        file = fs.get(ObjectId(image_id))
+        return send_file(io.BytesIO(file.read()), mimetype="image/jpeg")
+    except Exception:
+        return "Image not found", 404
