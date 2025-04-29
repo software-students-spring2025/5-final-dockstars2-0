@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import os
-from flask import Flask
+from flask import Flask, request
 from routes.auth_routes import auth_bp, init_auth
 from routes.event_routes import event_bp
 from routes.profile_routes import profile_bp
@@ -14,10 +14,11 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback-secret")
 app.config["APP_START"] = datetime.now()
 
+
 # connect to mongo
 mongo_uri = os.environ.get("MONGO_URI")
 client = MongoClient(mongo_uri)
-db = client[os.environ.get("MONGO_DBNAME", "test_db")]
+db = client[os.environ.get("MONGO_DBNAME", "yonder")]
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -33,7 +34,8 @@ class User(UserMixin):
         self.nickname = nickname or username
     
     def get_id(self):
-        return self.id
+        return str(self.id)
+
 
 init_auth(db, User)
 

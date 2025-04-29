@@ -1,6 +1,7 @@
 services:
   yonder-mongo:
     build: ./mongo
+    image: ariangn/yonder:mongo
     container_name: yonder-mongo
     ports:
       - "27017:27017"
@@ -11,12 +12,14 @@ services:
 
   yonder-webapp:
     build: ./web-app
+    image: ariangn/yonder:web-app
     container_name: yonder-webapp
     ports:
       - "5000:5000"
     environment:
       - MONGO_URI=mongodb://yonder-mongo:27017/yonder
       - MONGO_DBNAME=yonder
+      - FLASK_SECRET_KEY=supersecret
     depends_on:
       - yonder-mongo
     networks:
