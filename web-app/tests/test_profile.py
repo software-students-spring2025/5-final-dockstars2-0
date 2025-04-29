@@ -3,7 +3,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from unittest.mock import patch
 from flask_login import login_user
 
-
 from app import app
 from models import db
 
@@ -18,12 +17,9 @@ def test_profile_requires_login(client):
     assert response.status_code == 200
     assert b"Login" in response.data
 
-
-
-
 def test_create_board(client):
     with patch('models.db.users.find_one') as mock_find_one, \
-         patch('models.db.folders.insert_one') as mock_insert_one, \
+         patch('routes.profile_routes.db.folders.insert_one') as mock_insert_one, \
          patch('flask_login.utils._get_user') as mock_current_user, \
          patch('flask_login.login_user') as mock_login_user:
 
@@ -65,10 +61,11 @@ def test_create_board(client):
             '/create-board',
             data={'board_name': 'My Test Board'},
             content_type='application/x-www-form-urlencoded',
-            follow_redirects=False   # 🔥 NO redirect following
+            follow_redirects=False
         )
 
-        assert create_response.status_code in (302, 303)  # Expect redirect response
+        assert create_response.status_code in (302, 303)  # Expect redirect
 
-        # Verify the board was created
+        # ✅ Verify the board was inserted
         mock_insert_one.assert_called_once()
+
