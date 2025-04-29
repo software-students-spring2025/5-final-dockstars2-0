@@ -17,14 +17,53 @@
         <input type="file" id="image" name="image" accept="image/*" required>
 
         <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="date" id="date" name="date" required>
+            <button type="button" onclick="setToday()" style="padding: 5px 10px;">Today</button>
+        </div>
 
         <label for="location">Location:</label>
-        <input type="text" id="location" name="location" required>
+        <input type="text" id="location" name="location" required autocompletex>
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+
 
         <button type="submit" class="submit-event-button">Post Event</button>
     </form>
-
+    <br>
     <button class="back-button" onclick="history.back()">Back</button>
 </div>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2pm5wY1c9Ubt5MIqAuN3Ib_1fUUJgN_g&libraries=places"></script>
+<script>
+    function setToday() {
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("date").value = today;
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        // pre-fill date with today
+        setToday();
+    
+        // autocomplete
+        const input = document.getElementById('location');
+        if (input) {
+            const autocomplete = new google.maps.places.Autocomplete(input, { types: ['geocode'] });
+    
+            autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            if (!place.geometry) {
+                alert("Please select a location from the dropdown.");
+                input.value = '';
+                return;
+            }
+
+            document.getElementById('latitude').value = place.geometry.location.lat();
+            document.getElementById('longitude').value = place.geometry.location.lng();
+        });
+        }
+    });
+    </script>
+    
 {% endblock %}
