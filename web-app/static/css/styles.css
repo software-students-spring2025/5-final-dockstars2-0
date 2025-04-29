@@ -329,6 +329,36 @@ body.landing-page {
 
 /* ============= EXPLORE STYLES ============= */
 
+.custom-marker-icon {
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid white;
+  }
+  
+
+.explore-tabs {
+    display: flex;
+    justify-content: left;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .tab-button {
+    padding: 10px 20px;
+    background: #eee;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .tab-button.active {
+    background: black;
+    color: white;
+  }
+  
+
 .search-form {
     position: sticky;
     top: 0;

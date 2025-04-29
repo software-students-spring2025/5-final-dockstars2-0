@@ -1,89 +1,170 @@
-<!-- home page / explore page -->
-
 {% extends "base.html" %}
-
 {% block title %}Explore{% endblock %}
 
 {% block content %}
-<div class="explore-page">
-    <!-- <h1 class="explore-title">Explore Events</h1> -->
-
-    <form method="GET" action="{{ url_for('explore.search_events') }}" class="search-form" id="search-form">
-        <input type="text" name="q" class="search-input" placeholder="Search events..." value="{{ request.args.get('q', '') }}">
-        <button type="submit" class="search-button" id="search-btn">
-            <svg class="search-icon">
-                <use href="../../static/images/icons.svg#icon-search"></use>
-            </svg>
-        </button>
-    </form>
-
-    {% if query %}
-        <p class="search-results-text">Showing results for "{{ query }}"</p>
-        <button onclick="history.back()" class="no-events back-button" style="padding: 0px; margin: 0px;">Go back</button>
-    {% endif %}
-    
-    
-
-    {% if events %}
-    <div class="event-grid">
-        {% for event in events %}
-            <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
-                <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" alt="{{ event.title }}" class="event-img">
-            </a>
-        {% endfor %}
-    </div>
-    {% else %}
-        <div class="event-grid">
-            <p class="no-events">No events found.</p>
-        </div>
-    {% endif %}
-
+<div class="explore-tabs">
+  <button id="grid-tab" class="tab-button">explore</button>
+  <button id="map-tab" class="tab-button">nearby</button>
 </div>
 
+<div id="grid-view">
+  <form method="GET" action="{{ url_for('explore.search_events') }}" class="search-form" id="search-form">
+    <input type="text" name="q" class="search-input" placeholder="Search events..." value="{{ request.args.get('q', '') }}">
+    <button type="submit" class="search-button" id="search-btn">
+      <svg class="search-icon">
+        <use href="../../static/images/icons.svg#icon-search"></use>
+      </svg>
+    </button>
+  </form>
+
+  {% if query %}
+    <p class="search-results-text">Showing results for "{{ query }}"</p>
+    <button onclick="history.back()" class="no-events back-button" style="padding: 0px; margin: 0px;">Go back</button>
+  {% endif %}
+
+  {% if events %}
+    <div class="event-grid">
+      {% for event in events %}
+        <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
+          <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" alt="{{ event.title }}" class="event-img">
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="event-grid">
+      <p class="no-events">No events found.</p>
+    </div>
+  {% endif %}
+</div>
+
+<div id="map-view" style="display: none; min-width: 100%;">
+  <div id="map" style="width: 100%; height: 80vh; border-radius: 10px;"></div>
+</div>
+
+<!-- LEAFLET + CLUSTER LIBRARIES -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const colors = ["#EEBEDC", "#F4DD81", "#BDCBE9", "#BAC693"]
-    
-        const searchInput = document.querySelector(".search-input")
-        const searchButton = document.getElementById("search-btn")
-        const searchForm = document.getElementById("search-form")
-    
-        const randomFocusColor = colors[Math.floor(Math.random() * colors.length)];
-        const randomButtonColor = colors[Math.floor(Math.random() * colors.length)];
-    
-        searchButton.style.backgroundColor = randomButtonColor;
-    
-        searchInput.addEventListener("focus", () => {
-            searchInput.style.borderColor = randomFocusColor
+document.addEventListener("DOMContentLoaded", () => {
+  const colors = ["#EEBEDC", "#F4DD81", "#BDCBE9", "#BAC693"];
+  const searchInput = document.querySelector(".search-input");
+  const searchButton = document.getElementById("search-btn");
+
+  const randomFocusColor = colors[Math.floor(Math.random() * colors.length)];
+  const randomButtonColor = colors[Math.floor(Math.random() * colors.length)];
+
+  searchButton.style.backgroundColor = randomButtonColor;
+  searchInput.addEventListener("focus", () => searchInput.style.borderColor = randomFocusColor);
+  searchInput.addEventListener("blur", () => searchInput.style.borderColor = "#888");
+
+  let searchOpen = false;
+  searchButton.addEventListener("click", (e) => {
+    if (!searchOpen) {
+      e.preventDefault();
+      searchInput.classList.add("show");
+      searchInput.focus();
+      searchOpen = true;
+    } else if (searchInput.value.trim() === "") {
+      e.preventDefault();
+      searchInput.classList.remove("show");
+      searchInput.blur();
+      searchOpen = false;
+    }
+  });
+
+  const gridTab = document.getElementById('grid-tab');
+  const mapTab = document.getElementById('map-tab');
+  const gridView = document.getElementById('grid-view');
+  const mapView = document.getElementById('map-view');
+
+  function switchToMap() {
+    gridView.style.display = 'none';
+    mapView.style.display = 'block';
+    gridTab.classList.remove('active');
+    mapTab.classList.add('active');
+    if (!window.mapInitialized) {
+      initMap();
+      window.mapInitialized = true;
+    }
+    localStorage.setItem("exploreView", "map");
+  }
+
+  function switchToGrid() {
+    gridView.style.display = 'block';
+    mapView.style.display = 'none';
+    gridTab.classList.add('active');
+    mapTab.classList.remove('active');
+    localStorage.setItem("exploreView", "grid");
+  }
+
+  gridTab.addEventListener("click", switchToGrid);
+  mapTab.addEventListener("click", switchToMap);
+
+  // remember last view on return
+  if (localStorage.getItem("exploreView") === "map") {
+    switchToMap();
+  } else {
+    switchToGrid();
+  }
+});
+
+// INIT MAP
+function initMap() {
+  const map = L.map('map').setView([40.7128, -74.0060], 12); // NYC
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+  }).addTo(map);
+
+  const markers = L.markerClusterGroup();
+
+  {% for event in events %}
+    {% if event.latitude and event.longitude %}
+      (function() {
+        const icon = L.icon({
+          iconUrl: "{{ url_for('event.get_image', image_id=event.image_id) }}",
+          iconSize: [50, 50],
+          iconAnchor: [25, 25],
+          popupAnchor: [0, -20],
+          className: 'custom-marker-icon'
         });
-        searchInput.addEventListener("blur", () => {
-            searchInput.style.borderColor = "#888"
-        });
-    
-        searchButton.addEventListener("mouseenter", () => {
-            searchButton.style.transition = "background-color 0.3s ease";
-            searchButton.style.backgroundColor = "#000"
-        });
-    
-        searchButton.addEventListener("mouseleave", () => {
-            searchButton.style.backgroundColor = randomButtonColor;
-        });
-    
-        let searchOpen = false;
-    
-        searchButton.addEventListener("click", (e) => {
-            if (!searchOpen) {
-                e.preventDefault();
-                searchInput.classList.add("show")
-                searchInput.focus();
-                searchOpen = true;
-            } else if (searchInput.value.trim() === "") {
-                e.preventDefault();
-                searchInput.classList.remove("show");
-                searchInput.blur();
-                searchOpen = false;
-            } 
-        });
-    });
-</script>    
+
+        const marker = L.marker([{{ event.latitude|safe }}, {{ event.longitude|safe }}], { icon: icon });
+
+        marker.bindPopup(`
+          <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="popup-link" target="_self">
+            <b>{{ event.title|escape }}</b><br>{{ event.location|escape }}
+          </a>
+        `);
+
+        markers.addLayer(marker);
+      })();
+    {% endif %}
+  {% endfor %}
+
+  map.addLayer(markers);
+}
+</script>
+
+<style>
+  .custom-event-marker {
+    border-radius: 10px;
+    object-fit: cover;
+    overflow: hidden;
+  }
+  #map {
+    background: none;
+  }
+  .popup-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  .popup-link:hover {
+    color: #555;
+    text-decoration: underline;
+  }
+</style>
 {% endblock %}
