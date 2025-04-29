@@ -21,13 +21,16 @@ def test_create_board(client):
         'password': 'boardpassword',
         'email': 'board@test.com'
     }, follow_redirects=True)
-    
-    response = client.post('/login', data={
+
+    client.post('/login', data={
         'username': 'boardtester',
         'password': 'boardpassword'
     }, follow_redirects=True)
 
-    assert b"Profile" in response.data  # <- add this to ensure logged in
+    # 👇 Add this new line: manually go to profile page
+    response = client.get('/profile', follow_redirects=True)
+
+    assert b"Profile" in response.data  # or something more reliable
 
     response = client.post('/create-board', data={
         'board_name': 'My Test Board'
@@ -36,8 +39,3 @@ def test_create_board(client):
     from models import db
     board = db.folders.find_one({'name': 'My Test Board'})
     assert board is not None
-
-
-
-
-
