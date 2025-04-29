@@ -20,11 +20,12 @@ def test_profile_requires_login(client):
 
 
 
+
 def test_create_board(client):
     with patch('routes.profile_routes.db.users.find_one') as mock_find_one, \
-         patch('routes.profile_routes.db.folders.insert_one') as mock_insert_one:
-
-        fake_user_id = "64b64c44bcf86cd799439011"  # ✅ 24-hex chars
+         patch('routes.profile_routes.db.folders') as mock_folders:
+        
+        fake_user_id = "64b64c44bcf86cd799439011"
 
         mock_find_one.return_value = {
             "_id": ObjectId(fake_user_id),
@@ -36,8 +37,12 @@ def test_create_board(client):
             "attended_events": []
         }
 
+        # Make insert_one a MagicMock
+        mock_insert_one = mock_folders.insert_one
+        mock_insert_one.return_value = None
+
         with client.session_transaction() as session:
-            session['_user_id'] = fake_user_id  # ✅ use the same valid ID
+            session['_user_id'] = fake_user_id
 
         create_response = client.post(
             '/create-board',
