@@ -2,6 +2,7 @@ import sys, os, pytest
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from unittest.mock import patch
 from flask_login import login_user
+from bson import ObjectId
 
 from app import app
 from models import db
@@ -17,13 +18,16 @@ def test_profile_requires_login(client):
     assert response.status_code == 200
     assert b"Login" in response.data
 
+
+
 def test_create_board(client):
     with patch('routes.profile_routes.db.users.find_one') as mock_find_one, \
          patch('routes.profile_routes.db.folders.insert_one') as mock_insert_one:
 
-        # Mock database user
+        fake_user_id = "64b64c44bcf86cd799439011"  # ✅ 24-hex chars
+
         mock_find_one.return_value = {
-            "_id": "fakeid123",
+            "_id": ObjectId(fake_user_id),
             "username": "boardtester",
             "email": "board@test.com",
             "created_events": [],
@@ -32,13 +36,9 @@ def test_create_board(client):
             "attended_events": []
         }
 
-        # --- Set up a user in the session manually ---
         with client.session_transaction() as session:
-            session['_user_id'] = "fakeid123"  # <- Flask-Login reads this!
+            session['_user_id'] = fake_user_id  # ✅ use the same valid ID
 
-        # --- Now no need to mock _get_user or login_user at all! ---
-
-        # Create board
         create_response = client.post(
             '/create-board',
             data={'board_name': 'My Test Board'},
@@ -46,7 +46,6 @@ def test_create_board(client):
             follow_redirects=False
         )
 
-        assert create_response.status_code in (302, 303)  # Expect redirect
+        assert create_response.status_code in (302, 303)
 
-        # ✅ Now the insert should happen
         mock_insert_one.assert_called_once()
