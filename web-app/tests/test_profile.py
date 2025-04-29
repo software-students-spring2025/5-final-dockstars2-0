@@ -18,7 +18,7 @@ def test_profile_requires_login(client):
     assert b"Login" in response.data
 
 def test_create_board(client):
-    with patch('models.db.users.find_one') as mock_find_one, \
+    with patch('routes.profile_routes.db.users.find_one') as mock_find_one, \
          patch('routes.profile_routes.db.folders.insert_one') as mock_insert_one, \
          patch('flask_login.utils._get_user') as mock_current_user, \
          patch('flask_login.login_user') as mock_login_user:
@@ -56,7 +56,7 @@ def test_create_board(client):
 
         assert login_response.status_code == 200
 
-        # Create board (NO redirect following)
+        # Create board
         create_response = client.post(
             '/create-board',
             data={'board_name': 'My Test Board'},
@@ -66,6 +66,5 @@ def test_create_board(client):
 
         assert create_response.status_code in (302, 303)  # Expect redirect
 
-        # ✅ Verify the board was inserted
+        # Verify the board was inserted
         mock_insert_one.assert_called_once()
-
