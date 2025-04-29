@@ -8,7 +8,7 @@ load_dotenv()
 # connect to mongo
 mongo_uri = os.environ.get("MONGO_URI")
 client = MongoClient(mongo_uri)
-db = client[os.environ.get("MONGO_DBNAME")]
+db = client['PinterestApp']
 
 def get_event_by_id(event_id):
     # MongoDB find event by ID

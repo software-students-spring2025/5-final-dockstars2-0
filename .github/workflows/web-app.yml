@@ -1,0 +1,38 @@
+name: Web App CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy-webapp:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Web App image
+        run: |
+          docker build -t ariangn/yonder:web-app ./web-app
+          docker push ariangn/yonder:web-app
+
+      - name: SSH into DigitalOcean and Deploy Web App
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DIGITALOCEAN_IP }}
+          username: ${{ secrets.DIGITALOCEAN_USER }}
+          key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+          script: |
+            docker pull ariangn/yonder:web-app
+            docker stop yonder-webapp || true
+            docker rm yonder-webapp || true
+            docker run -d --name yonder-webapp --network yonder-network -p 80:5000 \
+              -e MONGO_URI="mongodb://yonder-mongo:27017/yonder" \
+              ariangn/yonder:web-app
