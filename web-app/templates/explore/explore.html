@@ -2,7 +2,8 @@
 {% block title %}Explore{% endblock %}
 
 {% block content %}
-<div class="explore-tabs">
+
+<div class="explore-tabs" style="justify-content: center;">
   <button id="grid-tab" class="tab-button">explore</button>
   <button id="map-tab" class="tab-button">nearby</button>
 </div>
@@ -16,6 +17,7 @@
       </svg>
     </button>
   </form>
+
 
   {% if query %}
     <p class="search-results-text">Showing results for "{{ query }}"</p>
@@ -38,6 +40,7 @@
 </div>
 
 <div id="map-view" style="display: none; min-width: 100%;">
+
   <div id="map" style="width: 100%; height: 80vh; border-radius: 10px;"></div>
 </div>
 
