@@ -16,26 +16,34 @@ def test_profile_requires_login(client):
     assert b"Login" in response.data
 
 def test_create_board(client):
+    # Signup
     client.post('/signup', data={
         'username': 'boardtester',
         'password': 'boardpassword',
         'email': 'board@test.com'
     }, follow_redirects=True)
 
-    client.post('/login', data={
+    # Login
+    login_response = client.post('/login', data={
         'username': 'boardtester',
         'password': 'boardpassword'
     }, follow_redirects=True)
 
-    # 👇 Add this new line: manually go to profile page
+    # 👇 FIRST: check login succeeded by checking something you know will be on your homepage
+    assert b"Welcome" in login_response.data or b"Logout" in login_response.data
+
+    # THEN: Access profile
     response = client.get('/profile', follow_redirects=True)
 
-    assert b"Profile" in response.data  # or something more reliable
+    # 👇 Instead of checking "Profile" text, check something like:
+    assert b"My Boards" in response.data or b"Created Events" in response.data
 
+    # Now create the board
     response = client.post('/create-board', data={
         'board_name': 'My Test Board'
     }, follow_redirects=True)
 
+    # Validate creation
     from models import db
     board = db.folders.find_one({'name': 'My Test Board'})
     assert board is not None
