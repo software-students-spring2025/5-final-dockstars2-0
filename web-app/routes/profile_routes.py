@@ -42,6 +42,7 @@ def profile():
 def create_board():
     if request.method == "POST":
         board_name = request.form.get("name", "").strip()
+        description = request.form.get("description", "").strip()
         if not board_name:
             flash("Board name cannot be empty.")
             return redirect(url_for("profile.create_board"))

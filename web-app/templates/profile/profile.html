@@ -213,19 +213,30 @@
 
 <script>
   function showTab(id) {
-    document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelector(`[onclick="showTab('${id}')"]`).classList.add('active');
+      document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelector(`[onclick="showTab('${id}')"]`).classList.add('active');
   }
-
+  
+  // listen to hash on page load
   document.addEventListener("DOMContentLoaded", () => {
-    if (window.location.hash === "#boards") {
-      showTab("boards");
-    } else {
-      showTab("created");
-    }
+      const hash = window.location.hash;
+      if (hash) {
+          const tabName = hash.substring(1); // remove the '#'
+          showTab(tabName);
+      }
   });
-</script>
+  
+  // listen to hash changes while already on page
+  window.addEventListener("hashchange", () => {
+      const hash = window.location.hash;
+      if (hash) {
+          const tabName = hash.substring(1);
+          showTab(tabName);
+      }
+  });
+  </script>
+  
 
 {% endblock %}

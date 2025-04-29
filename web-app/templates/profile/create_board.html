@@ -5,6 +5,10 @@
 <div class="add-event-container">
   <h1 class="add-event-title">Create a New Board</h1>
 
+  {% if request.method == 'POST' %}
+    <div class="success-message">Board created successfully!</div>
+  {% endif %}
+
   <form method="POST" class="add-event-form">
     <input type="text" name="name" placeholder="Board Name" required>
     <textarea name="description" placeholder="Description (optional)"></textarea>
