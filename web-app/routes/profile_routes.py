@@ -59,3 +59,38 @@ def create_board():
         return redirect(url_for("profile.profile"))
 
     return render_template("profile/create_board.html")
+
+@profile_bp.route("/settings", methods=["GET", "POST"])
+@login_required
+def settings():
+    if request.method == "POST":
+        new_username = request.form.get("username")
+        new_password = request.form.get("password")
+        new_profile_pic = request.form.get("profile_pic")
+
+        updates = {}
+
+        if new_username:
+            updates["username"] = new_username
+
+        if new_password:
+            from werkzeug.security import generate_password_hash
+            updates["pswdHash"] = generate_password_hash(new_password)
+
+        if new_profile_pic:
+            updates["profile_pic"] = new_profile_pic
+
+        if updates:
+            from bson.objectid import ObjectId
+            db.users.update_one(
+                {"_id": ObjectId(current_user.id)},
+                {"$set": updates}
+            )
+            flash("Settings updated successfully!", "success")
+        else:
+            flash("No changes submitted.", "info")
+
+        return redirect(url_for("profile.settings"))
+
+    return render_template("profile/settings.html", user=current_user)
+
