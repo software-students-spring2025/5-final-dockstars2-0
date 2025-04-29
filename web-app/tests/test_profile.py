@@ -19,9 +19,10 @@ def test_profile_requires_login(client):
 
 def test_create_board(client):
     with patch('models.db.users.find_one') as mock_find_one, \
-         patch('models.db.folders.insert_one') as mock_insert_one:
+         patch('models.db.folders.insert_one') as mock_insert_one, \
+         patch('flask_login.utils._get_user') as mock_current_user:
 
-        # Mock a user object being found
+        # Mock database user
         mock_find_one.return_value = {
             "_id": "fakeid123",
             "username": "boardtester",
@@ -31,6 +32,9 @@ def test_create_board(client):
             "maybe_events": [],
             "attended_events": []
         }
+
+        # Mock logged-in user
+        mock_current_user.return_value.id = "fakeid123"
 
         # Signup
         client.post('/signup', data={
@@ -47,14 +51,12 @@ def test_create_board(client):
 
         assert login_response.status_code == 200
 
-        # Profile page
-        response = client.get('/profile', follow_redirects=True)
-        assert response.status_code == 200
-
         # Create board
-        client.post('/create-board', data={
+        create_response = client.post('/create-board', data={
             'board_name': 'My Test Board'
         }, follow_redirects=True)
 
-        # Assert that insert_one was called
+        assert create_response.status_code == 200
+
+        # Verify the board was created
         mock_insert_one.assert_called_once()
