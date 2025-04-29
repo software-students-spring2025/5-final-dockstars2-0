@@ -11,7 +11,7 @@ from datetime import datetime
 
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback-secret")
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "supersecret")
 app.config["APP_START"] = datetime.now()
 
 

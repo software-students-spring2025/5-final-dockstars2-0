@@ -91,16 +91,16 @@
   </div>
 
   <div id="boards" class="tab-section">
-    {% if folders %}
-      <div class="event-grid">
-        {% for board in folders %}
-          <div class="event-card board-card">{{ board.name }}</div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p class="empty-note">No boards yet. Save some events to start a collection!</p>
-    {% endif %}
+    <div class="event-grid">
+      {% for board in folders %}
+        <div class="event-card board-card">{{ board.name }}</div>
+      {% endfor %}
+      <a href="{{ url_for('profile.create_board') }}" class="event-card board-card" style="display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+        +
+      </a>
+    </div>
   </div>
+  
 </div>
 
 <style>
@@ -210,5 +210,14 @@
     document.getElementById(id).classList.add('active');
     document.querySelector(`[onclick="showTab('${id}')"]`).classList.add('active');
   }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (window.location.hash === "#boards") {
+      showTab("boards");
+    } else {
+      showTab("created");
+    }
+  });
 </script>
+
 {% endblock %}
