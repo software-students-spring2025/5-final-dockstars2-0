@@ -60,7 +60,7 @@ def create_board():
         result = db.folders.insert_one(new_board)
         flash("Board created successfully!")
 
-        # return redirect(url_for("profile.view_board", board_id=str(result.inserted_id)))
+        return redirect(url_for("profile.view_board", board_id=str(result.inserted_id)))
 
     return render_template("profile/create_board.html")
 
