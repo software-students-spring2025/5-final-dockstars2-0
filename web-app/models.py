@@ -25,13 +25,21 @@ def get_event_by_id(event_id):
         "location": data["location"],
         "latitude": data.get("latitude"),
         "longitude": data.get("longitude"),
-        "creator_username": data.get("creator_username", "Unknown")
+        "creator_id": data.get("creator_id"),
+        "creator_username": data.get("creator_username", "Unknown"),
+        "creator_pic_id": str(data.get("creator_pic_id")) if data.get("creator_pic_id") else None
     }
+
 
 
 def get_comments_for_event(event_id):
     comments = db.comments.find({"event_id": event_id})
-    return [{"username": c["username"], "text": c["text"]} for c in comments]
+    return [{
+        "username": c["username"],
+        "user_id": c["user_id"],
+        "text": c["text"]
+    } for c in comments]
+
 
 
 def get_user_folders(user_id):
@@ -42,8 +50,9 @@ def get_user_folders(user_id):
 def save_event_to_folder(user_id, event_id, folder_id):
     db.folders.update_one(
         {"_id": ObjectId(folder_id), "user_id": user_id},
-        {"$addToSet": {"event_ids": event_id}}
+        {"$addToSet": {"event_ids": ObjectId(event_id)}}
     )
+
 
 
 def add_comment_to_event(user_id, event_id, text):
@@ -60,6 +69,7 @@ def add_comment_to_event(user_id, event_id, text):
 def create_event(user_id, title, description, image_id, date, location, latitude=None, longitude=None):
     user = db.users.find_one({"_id": ObjectId(user_id)})
     username = user["username"] if user else "Unknown"
+    profile_pic_id = str(user.get("profile_pic_id")) if user and user.get("profile_pic_id") else None
 
     event_data = {
         "title": title,
@@ -68,8 +78,10 @@ def create_event(user_id, title, description, image_id, date, location, latitude
         "date": date,
         "location": location,
         "creator_id": user_id,
-        "creator_username": username
+        "creator_username": username,
+        "creator_pic_id": profile_pic_id
     }
+
 
     if latitude and longitude:
         event_data["latitude"] = float(latitude)
@@ -91,7 +103,8 @@ def get_all_events():
             "location": doc.get("location"),
             "latitude": doc.get("latitude"),
             "longitude": doc.get("longitude"),
-            "creator_username": doc.get("creator_username", "Unknown")
+            "creator_username": doc.get("creator_username", "Unknown"),
+            "creator_pic_id": doc.get("creator_pic_id", None)
         })
     return events
 

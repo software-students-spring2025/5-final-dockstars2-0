@@ -1,28 +1,187 @@
 {% extends "base.html" %}
-
-{% block title %}View Board{% endblock %}
+{% block title %}{{ board.name }}{% endblock %}
 
 {% block content %}
-<div class="board-header">
-    <h1>{{ board.name }}</h1>
-    <p>{{ board.description or "No description yet." }}</p>
+<div class="event-details-container">
+  <h1>{{ board.name }} </h1>
+  <p>{{ board.description or "No description yet." }}</p>
+  {% if current_user.id == board.user_id %}
+    <a  class="edit-button" onclick="openModal('editBoardModal')">Edit</a>
+  
+    {% endif %}
+
+  
 </div>
 
-<hr>
+<div class="event-grid">
+  {% for event in events %}
+    <a href="{{ url_for('explore.event_detail', event_id=event.id) }}" class="event-card">
+      <img src="{{ url_for('event.get_image', image_id=event.image_id) }}" class="event-img" alt="{{ event.title }}">
+    </a>
+  {% else %}
+    <p class="no-events">No events saved to this board yet.</p>
+  {% endfor %}
+</div>
 
-<h2>Events in "{{ board.name }}"</h2>
-<div class="board-events-gallery">
-    {% for event in events %}
-        <div class="event-card">
-            <img src="{{ event.image_url }}" alt="Event image" class="event-img">
-            <h3>{{ event.title }}</h3>
-            <p>{{ event.date }}</p>
-            <a href="{{ url_for('event.view_event', event_id=event.id) }}">View Event</a>
+<a href="{{ url_for('profile.profile') }}" class="back-button" style="text-decoration: none;">Back to Profile</a>
+
+<div id="editBoardModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('editBoardModal')">&times;</span>
+      <h2>Edit Board</h2>
+  
+      <form method="POST" action="{{ url_for('profile.edit_board', board_id=board._id) }}">
+        <div class="form-group">
+          <label for="name">Board Name</label>
+          <input type="text" id="name" name="name" value="{{ board.name }}" required>
         </div>
-    {% else %}
-        <p>No events saved to this board yet.</p>
-    {% endfor %}
-</div>
+      
+        <div class="form-group">
+          <label for="description">Description (optional)</label>
+          <textarea id="description" name="description">{{ board.description }}</textarea>
+        </div>
+      
+        <div class="modal-actions">
+          <button type="submit" class="btn-green">Save Changes</button>
+        </div>
+      </form>
+      
+      <form method="POST" action="{{ url_for('profile.delete_board', board_id=board._id) }}"
+      onsubmit="return confirm('Are you sure you want to delete this board?');"
+      style="margin-top: 0.75rem; display: flex; justify-content: center;">
+      <div class="modal-actions">
+        <button type="submit" class="btn-red full-width">Delete Board</button>
+      </div>
+</form>
+      
+    </div>
+  </div>
+  
+  
+<style>
 
-<a href="{{ url_for('profile.profile') }}">← Back to Profile</a>
+
+    .edit-button {
+  background-color: #EEBEDC;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 10px;
+
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: white;
+  margin: auto;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.btn-pink {
+  background-color: #EEBEDC;
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 25px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.btn-green {
+  background-color: #BAC693;
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 25px;
+  margin-top: 10px;
+  cursor: pointer;
+  width: 145px;
+}
+
+.btn-red {
+  background-color: #ff4d4d;
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 25px;
+  margin-top: 10px;
+  cursor: pointer;
+  width: 145px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  justify-content: center;
+  /* gap: 1rem; */
+  /* margin-top: 1.5rem; */
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+</style>
+<script>
+    function openModal(id) {
+      document.getElementById(id).style.display = "block";
+    }
+    
+    function closeModal(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    window.onclick = function(event) {
+  const modal = document.getElementById('editBoardModal');
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
+    </script>
+    
+
 {% endblock %}
