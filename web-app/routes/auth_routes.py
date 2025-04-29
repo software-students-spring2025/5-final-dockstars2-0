@@ -36,6 +36,7 @@ def signup():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        email = request.form.get("email")
 
         # checking for existing user using pymongo
         existingUser = _db.users.find_one({"username": username})
@@ -47,6 +48,7 @@ def signup():
         result = _db.users.insert_one(
             {
                 "username": username,
+                "email": email,
                 "pswdHash": pswdHash,
                 "nickname": username, 
                 "profile_pic": "static/nav-icons/profile-icon.svg",
@@ -76,17 +78,6 @@ def signup():
     # flask function to look into the templates folder
     return render_template("auth/signup.html")
 
-'''
-@auth_bp.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        # … authenticate …
-        login_user(user)
-        session["app_start"] = current_app.config["APP_START"]
-        flash("Welcome!")
-        return redirect(url_for("explore.explore"))   # ← same redirect
-    return render_template("auth/login.html")    
-'''  
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -94,7 +85,14 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        if not username or not password:
+            flash("Username and password are required.")
+            return redirect(url_for("auth.login"))
+
+
         #print("POST received:", username)
+
+        session.clear()
 
         # Look up the user in the database
         userDoc = _db.users.find_one({"username": username})

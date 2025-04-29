@@ -15,47 +15,96 @@ def profile():
 
     user_doc = db.users.find_one({"_id": ObjectId(current_user.id)})
 
+    if not user_doc:
+        flash("User not found.")
+        return redirect(url_for('auth.login'))
+
     folders = get_user_folders(str(current_user.id))
 
-    # Load events the user is planning or maybe attending (COMBINED)
-    #planning_event_ids = getattr(current_user, "planning_events", []) + getattr(current_user, "maybe_events", [])
-    planning_event_ids = user_doc.get("planning_events", []) + user_doc.get("maybe_events", [])
+    created_events = []
+    for event_id in user_doc.get("created_events", []):
+        event = get_event_by_id(event_id)
+        if event:
+            created_events.append(event)
+
     planning_events = []
-    for event_id in planning_event_ids:
+    for event_id in user_doc.get("planning_events", []):
         event = get_event_by_id(event_id)
         if event:
             planning_events.append(event)
 
-    # Load events the user has attended
-    #attended_event_ids = getattr(current_user, "attended_events", [])
-    attended_event_ids = user_doc.get("attended_events", [])
+    maybe_events = []
+    for event_id in user_doc.get("maybe_events", []):
+        event = get_event_by_id(event_id)
+        if event:
+            maybe_events.append(event)
+
     attended_events = []
-    for event_id in attended_event_ids:
+    for event_id in user_doc.get("attended_events", []):
         event = get_event_by_id(event_id)
         if event:
             attended_events.append(event)
 
-    return render_template("profile/profile.html", 
-                           user=current_user,
-                           folders=folders,
-                           planning_events=planning_events,
-                           attended_events=attended_events)
+    return render_template(
+        "profile/profile.html",
+        user=current_user,
+        folders=folders,
+        created_events=created_events,
+        planning_events=planning_events,
+        maybe_events=maybe_events,
+        attended_events=attended_events
+    )
 
 @profile_bp.route("/create-board", methods=["GET", "POST"])
 @login_required
 def create_board():
     if request.method == "POST":
         board_name = request.form.get("board_name")
-        if not board_name:
+        if not board_name.strip():
             flash("Board name cannot be empty.")
             return redirect(url_for("profile.create_board"))
 
-        _db.folders.insert_one({
+        db.folders.insert_one({
             "user_id": str(current_user.id),
-            "name": board_name,
+            "name": board_name.strip(),
             "event_ids": []
         })
         flash("Board created successfully!")
         return redirect(url_for("profile.profile"))
 
     return render_template("profile/create_board.html")
+
+@profile_bp.route("/settings", methods=["GET", "POST"])
+@login_required
+def settings():
+    if request.method == "POST":
+        new_username = request.form.get("username")
+        new_password = request.form.get("password")
+        new_profile_pic = request.form.get("profile_pic")
+
+        updates = {}
+
+        if new_username:
+            updates["username"] = new_username
+
+        if new_password:
+            from werkzeug.security import generate_password_hash
+            updates["pswdHash"] = generate_password_hash(new_password)
+
+        if new_profile_pic:
+            updates["profile_pic"] = new_profile_pic
+
+        if updates:
+            from bson.objectid import ObjectId
+            db.users.update_one(
+                {"_id": ObjectId(current_user.id)},
+                {"$set": updates}
+            )
+            flash("Settings updated successfully!", "success")
+        else:
+            flash("No changes submitted.", "info")
+
+        return redirect(url_for("profile.settings"))
+
+    return render_template("profile/settings.html", user=current_user)
+
