@@ -9,6 +9,7 @@ python-dotenv = "*"
 flask-login = "*"
 pytest = "*"
 exceptiongroup = "*"
+tomli = "*"
 
 [dev-packages]
 
