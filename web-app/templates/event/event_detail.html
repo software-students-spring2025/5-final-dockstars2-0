@@ -1,50 +1,61 @@
 {% extends "base.html" %}
-
-{% block title %}about this event{% endblock %}
+{% block title %}{{ event.title }}{% endblock %}
 
 {% block content %}
-<h1>{{ event.title }}</h1>
-<img src="{{ event.image_url }}" alt="Event image" style="width:300px;"><br>
-<p>{{ event.description }}</p>
-<p><strong>Date:</strong> {{ event.date }}</p>
-<p><strong>Location:</strong> {{ event.location }}</p>
-<p><strong>Posted by:</strong> {{ event.creator_username }}</p>
+<div class="event-details-container">
+    <button class="back-button" onclick="history.back()">Back</button>
 
+    <div class="event-card-large">
+        <img src="{{ event.image_url }}" alt="Event image" class="event-img-large">
+        <div class="event-info-box">
+            <div class="event-creator-row">
+                <div class="event-creator-left">
+                    <div class="creator-pic-placeholder"></div>
+                    <span class="creator-name">{{ event.creator_username }}</span>
+                </div>
+                <a href="{{ url_for('event.signup_event', event_id=event.id) }}" class="save-icon-btn">
+                    <svg class="bookmark-icon">
+                        <use href="../../static/images/icons.svg#icon-bookmarks"></use>
+                    </svg>
+                </a>
+            </div>
 
-<!-- ADD THESE 2 FORMS HERE -->
+            <h1 class="event-title">{{ event.title }}</h1>
+            
+            <div class="event-buttons">
+                <form method="POST" action="{{ url_for('event.plan_to_attend', event_id=event.id) }}">
+                    <button class="btn-circle" type="submit">✔️</button>
+                </form>
+                <form method="POST" action="{{ url_for('event.maybe_attend', event_id=event.id) }}">
+                    <button class="btn-circle" type="submit">❔</button>
+                </form>
+            </div>
+            <p class="event-desc">{{ event.description }}</p>
+            <div class="event-meta">
+                <span>{{ event.date }}</span>
+                <span>{{ event.location }}</span>
+            </div>
+        </div>
+    </div>
 
-<!-- Plan to Attend Button -->
-<form method="POST" action="{{ url_for('event.plan_to_attend', event_id=event.id) }}">
-    <button type="submit">Plan to Attend</button>
-</form>
+    <div class="comment-section">
+        <h2>Comments</h2>
+        <ul>
+            {% for comment in comments %}
+                <li><strong>{{ comment.username }}</strong>: {{ comment.text }}</li>
+            {% else %}
+                <li>No comments yet.</li>
+            {% endfor %}
+        </ul>
 
-<!-- Maybe Attend Button -->
-<form method="POST" action="{{ url_for('event.maybe_attend', event_id=event.id) }}">
-    <button type="submit">Maybe Attend</button>
-</form>
-
-<a href="{{ url_for('event.signup_event', event_id=event.id) }}">
-    <button>save to profile</button>
-</a>
-
-<hr>
-
-<h2>Comments</h2>
-<ul>
-    {% for comment in comments %}
-    <li><strong>{{ comment.username }}:</strong> {{ comment.text }}</li>
-    {% else %}
-    <li>No comments yet.</li>
-    {% endfor %}
-</ul>
-
-{% if session.get("user_id") %}
-<form method="POST" action="{{ url_for('event.add_comment', event_id=event.id) }}">
-    <textarea name="comment_text" placeholder="Add a comment..." required></textarea><br>
-    <button type="submit">Post Comment</button>
-</form>
-{% else %}
-<p><a href="{{ url_for('auth.login') }}">Log in</a> to comment.</p>
-{% endif %}
-
+        {% if session.get("user_id") %}
+        <form method="POST" action="{{ url_for('event.add_comment', event_id=event.id) }}">
+            <textarea name="comment_text" placeholder="Add a comment..." required></textarea><br>
+            <button type="submit" class="comment-btn">Post Comment</button>
+        </form>
+        {% else %}
+        <p><a href="{{ url_for('auth.login') }}">Log in</a> to comment.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
