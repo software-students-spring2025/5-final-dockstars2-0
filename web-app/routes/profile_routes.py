@@ -50,7 +50,7 @@ def create_board():
             flash("Board name cannot be empty.")
             return redirect(url_for("profile.create_board"))
 
-        _db.folders.insert_one({
+        db.folders.insert_one({
             "user_id": str(current_user.id),
             "name": board_name,
             "event_ids": []
