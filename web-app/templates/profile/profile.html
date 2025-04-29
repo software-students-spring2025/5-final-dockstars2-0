@@ -4,6 +4,9 @@
 
 {% block content %}
 <div class="profile-header">
+    <a href="{{ url_for('profile.settings') }}" class="settings-btn">
+        Settings
+   </a>
     <img src="{{ user.profile_pic_url or '/static/default-profile.png' }}" alt="Profile Picture" class="profile-pic">
     <h1>{{ user.username }}</h1>
     <div class="create-event-button">
