@@ -13,14 +13,6 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
-  
-  ml_client:
-    build: ./machine-learning-client 
-    container_name: ml_client
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/ 
-    depends_on:
-      - mongo
 
 volumes:
   mongo-data:
