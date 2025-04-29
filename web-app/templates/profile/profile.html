@@ -12,18 +12,20 @@
         <p>{{ created_events|length }} posts · {{ folders|length }} boards</p>
       </div>
     </div>
+    {% if user.id == current_user.id %}
     <div class="profile-actions">
         <a href="{{ url_for('profile.settings')}}" class="nav-item" style="display: inline-block;">
             <svg class="nav-icon">
               <use href="../static/images/icons.svg#icon-settings"></use>
             </svg>
           </a>
-      <a href="{{ url_for('event.add_event')}}" class="nav-item" style="display: inline-block;">
+      <!-- <a href="{{ url_for('event.add_event')}}" class="nav-item" style="display: inline-block;">
         <svg class="nav-icon">
           <use href="../static/images/icons.svg#icon-addbutton"></use>
         </svg>
-      </a>
+      </a> -->
     </div>
+    {% endif %}
   </div>
 
   <div class="profile-tabs">
@@ -93,7 +95,9 @@
   <div id="boards" class="tab-section">
     <div class="event-grid">
       {% for board in folders %}
-        <div class="event-card board-card">{{ board.name }}</div>
+        <a href="{{ url_for('profile.view_board', board_id=board.id) }}" class="event-card board-card">
+          {{ board.name }}
+        </a>
       {% endfor %}
       <a href="{{ url_for('profile.create_board') }}" class="event-card board-card" style="display: flex; align-items: center; justify-content: center; font-size: 2rem;">
         +
@@ -200,6 +204,10 @@
     text-align: center;
     color: #aaa;
     margin-top: 2rem;
+  }
+  .profile-container a{
+    color: inherit;
+    text-decoration: none;
   }
 </style>
 

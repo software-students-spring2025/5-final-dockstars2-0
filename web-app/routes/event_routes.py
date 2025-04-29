@@ -17,26 +17,25 @@ from werkzeug.utils import secure_filename
 event_bp = Blueprint("event", __name__, template_folder="event")
 
 
-@event_bp.route("/event/<event_id>/signup", methods=["GET", "POST"])
+@event_bp.route("/event/<event_id>/signup", methods=["POST"])
 @login_required
 def signup_event(event_id):
-    if "user_id" not in session:
-        flash("You must be logged in to save events.")
-        return redirect(url_for("auth.login"))
-
     event = get_event_by_id(event_id)
-    folders = get_user_folders(session["user_id"])
+    if not event:
+        flash("Event not found.")
+        return redirect(url_for("explore.explore"))
 
-    if request.method == "POST":
-        selected_folder = request.form.get("folder")
-        if selected_folder == "new":
-            return redirect(url_for('profile.create_board'))
+    selected_board = request.form.get("board")
+    if selected_board == "new":
+        return redirect(url_for('profile.create_board'))
 
-        save_event_to_folder(session["user_id"], event_id, selected_folder)
-        flash("Saved successfully!")
-        return redirect(url_for("profile.profile"))
+    save_event_to_folder(str(current_user.id), event_id, selected_board)
+    flash("Saved successfully!")
 
-    return render_template("event_signup.html", event=event, folders=folders)
+    return redirect(url_for("explore.event_detail", event_id=event_id))
+
+
+
 
 
 @event_bp.route("/create-event", methods=["GET", "POST"])
@@ -145,3 +144,16 @@ def get_image(image_id):
         return send_file(io.BytesIO(file.read()), mimetype="image/jpeg")
     except Exception:
         return "Image not found", 404
+
+@event_bp.route("/event/<event_id>/comment", methods=["POST"])
+@login_required
+def add_comment(event_id):
+    comment_text = request.form.get("comment_text")
+    if comment_text:
+        db.comments.insert_one({
+            "event_id": event_id,
+            "user_id": str(current_user.id),
+            "username": current_user.username,
+            "text": comment_text
+        })
+    return redirect(url_for("explore.event_detail", event_id=event_id))

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import login_required, current_user
-from models import get_all_events, get_event_by_id
+from models import get_all_events, get_event_by_id, get_user_folders
 import random
 
 explore_bp = Blueprint("explore", __name__, template_folder="templates")
@@ -32,17 +32,27 @@ def explore_home():
 
 
 @explore_bp.route("/event/<event_id>")
-@login_required
 def event_detail(event_id):
     event = get_event_by_id(event_id)
     if not event:
         flash("Event not found.")
         return redirect(url_for("explore.explore"))
-    return render_template("event/event_detail.html", event=event)
+
+    from models import get_comments_for_event
+    comments = get_comments_for_event(event_id)
+
+    folders = get_user_folders(str(current_user.id))
+
+    return render_template(
+        "event/event_detail.html",
+        event=event,
+        comments=comments,
+        folders=folders
+    )
+
 
 
 @explore_bp.route("/search", methods=["GET"])
-@login_required
 def search_events():
     query = request.args.get("q", "").strip().lower()
     if not query:
