@@ -10,6 +10,7 @@ mongo_uri = os.environ.get("MONGO_URI")
 client = MongoClient(mongo_uri)
 db = client['PinterestApp']
 
+
 def get_event_by_id(event_id):
     # MongoDB find event by ID
     data = db.events.find_one({"_id": ObjectId(event_id)})
