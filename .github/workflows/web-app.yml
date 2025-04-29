@@ -33,6 +33,10 @@ jobs:
             docker pull ariangn/yonder:web-app
             docker stop yonder-webapp || true
             docker rm yonder-webapp || true
-            docker run -d --name yonder-webapp --network yonder-network -p 80:5000 \
+            docker run -d --name yonder-webapp --network yonder-network --restart always -p 80:5000 \
               -e MONGO_URI="mongodb://yonder-mongo:27017/yonder" \
+              -e MONGO_DBNAME="yonder" \
+              -e FLASK_SECRET_KEY="${{ secrets.FLASK_SECRET_KEY }}" \
               ariangn/yonder:web-app
+
+

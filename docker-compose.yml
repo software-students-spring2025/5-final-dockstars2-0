@@ -16,6 +16,8 @@ services:
       - "5000:5000"
     environment:
       - MONGO_URI=mongodb://yonder-mongo:27017/yonder
+      - MONGO_DBNAME=yonder
+      - FLASK_SECRET_KEY=your-super-secret-key
     depends_on:
       - yonder-mongo
     networks:
