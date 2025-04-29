@@ -21,6 +21,9 @@ body.landing-page {
     gap: 0px;
 }
 
+.main-content{
+    animation: fadeInUpMain 1s ease forwards;
+}
 
 /* ============= LANDING/START PAGE STYLES ============= */
 #logo{
@@ -261,7 +264,7 @@ body.landing-page {
     flex-direction: column;
     align-items: center;
     margin-top: 80px;
-    animation: fadeInUpMain 1s ease forwards;
+    /* animation: fadeInUpMain 1s ease forwards; */
 }
 
 .login-title {
