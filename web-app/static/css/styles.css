@@ -328,14 +328,6 @@ body.landing-page {
 }
 
 /* ============= EXPLORE STYLES ============= */
-.explore-container {
-    margin-left: 80px; /* offset sidebar */
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* center horizontally */
-    justify-content: flex-start; /* align to the top */
-}
 
 .search-form {
     position: sticky;
@@ -421,6 +413,15 @@ body.landing-page {
     transform: translateY(-5px);
 }
 
+.event-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: left;
+    color: #000;
+}
+
+
 .event-img {
     width: 100%;
     height: auto;
@@ -430,6 +431,9 @@ body.landing-page {
 }
 
 .no-events {
+    display: flex;
+    justify-items: center;
+    align-items: center;
     text-align: center;
     font-size: 18px;
     margin-top: 50px;
@@ -469,3 +473,230 @@ body.landing-page {
         column-count: 1;
     }
 }
+
+/* ============= EVENT DETAILS ============= */
+.event-details-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.event-card-large {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.event-img-large {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.event-info-box {
+    padding: 20px;
+}
+
+.event-creator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.creator-pic-placeholder {
+    width: 40px;
+    height: 40px;
+    background-color: #ddd;
+    border-radius: 50%;
+}
+
+.creator-name {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.event-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.btn-circle {
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.btn-tag {
+    background-color: #BDCBE9;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.event-desc {
+    margin: 20px 0;
+    line-height: 1.5;
+    color: #333;
+}
+
+.event-meta {
+    display: flex;
+    gap: 30px;
+    color: #666;
+    font-size: 14px;
+}
+
+.comment-section h2 {
+    margin-bottom: 10px;
+}
+
+.comment-section ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.comment-section li {
+    margin-bottom: 10px;
+    background: #f5f5f5;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+textarea[name="comment_text"] {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+.comment-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #EEBEDC;
+    color: white; 
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.event-creator-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.event-creator-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.save-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bookmark-icon {
+    width: 22px;
+    height: 22px;
+    fill: #BDCBE9;
+    transition: transform 0.2s ease;
+}
+
+.bookmark-icon:hover {
+    transform: scale(1.2);
+    fill: #000;
+}
+
+.back-button {
+    border: none;
+    background: none;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: color 0.2s ease;
+}
+
+.back-button:hover {
+    color: #888;
+}
+
+/* ============= ADD EVENT ============= */
+
+.add-event-container {
+    margin-left: 80px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-event-title {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.add-event-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.add-event-form input,
+.add-event-form textarea {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.add-event-form input:focus,
+.add-event-form textarea:focus {
+    border-color: #BDCBE9;
+    outline: none;
+}
+
+.submit-event-button {
+    background-color: #BAC693;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-event-button:hover {
+    background-color: #000;
+}
+
