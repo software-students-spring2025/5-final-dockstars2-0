@@ -31,6 +31,9 @@ class User(UserMixin):
         self.username = username
         self.pswdHash = pswdHash
         self.nickname = nickname or username
+    
+    def get_id(self):
+        return self.id
 
 init_auth(db, User)
 
