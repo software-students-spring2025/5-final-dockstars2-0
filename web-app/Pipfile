@@ -12,6 +12,8 @@ exceptiongroup = "*"
 tomli = "*"
 
 [dev-packages]
+pytest = "*"
+exceptiongroup = "*"
 
 [requires]
 python_version = "3.10"
