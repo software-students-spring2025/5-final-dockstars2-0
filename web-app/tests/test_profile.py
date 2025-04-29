@@ -19,9 +19,10 @@ def test_profile_requires_login(client):
     assert b"Login" in response.data
 
 
+
 def test_create_board(client):
     with patch('models.db.users.find_one') as mock_find_one, \
-         patch('models.db.folders.insert_one') as mock_insert_one, \
+         patch('routes.profile_routes.db.folders.insert_one') as mock_insert_one, \
          patch('flask_login.utils._get_user') as mock_current_user, \
          patch('flask_login.login_user') as mock_login_user:
 
@@ -36,12 +37,12 @@ def test_create_board(client):
             "attended_events": []
         }
 
-        # Mock logged-in user (after login)
+        # Mock logged-in user
         mock_current_user.return_value.is_authenticated = True
         mock_current_user.return_value.id = "fakeid123"
 
         # Mock login_user (so login doesn't fail silently)
-        mock_login_user.return_value = None  # we don't need it to return anything
+        mock_login_user.return_value = None
 
         # Signup
         client.post('/signup', data={
