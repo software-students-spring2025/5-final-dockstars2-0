@@ -41,7 +41,7 @@ def event_detail(event_id):
     from models import get_comments_for_event
     comments = get_comments_for_event(event_id)
 
-    folders = get_user_folders(str(current_user.id))
+    folders = get_user_folders(str(current_user.id)) if current_user.is_authenticated else None
 
     return render_template(
         "event/event_detail.html",
@@ -74,7 +74,7 @@ def search_events():
     return render_template(
         "explore/explore.html",
         events=filtered_events,
-        username=current_user.username,
+        username=current_user.username if current_user.is_authenticated else None,
         query=query  # pass the search query so the template knows it's a search
     )
 

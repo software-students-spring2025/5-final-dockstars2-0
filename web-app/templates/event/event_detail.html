@@ -12,6 +12,7 @@
             <div class="event-creator-row">
                 
                 <div class="event-creator-left">
+                
                     <a href="{{ url_for('profile.user_profile', user_id=event.creator_id) }}" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
                         <!-- {% if event.creator_pic_id %}
                             <img src="{{ url_for('event.get_image', image_id=event.creator_pic_id) }}" alt="Profile" class="profile-avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
@@ -21,11 +22,13 @@
                         <span class="creator-name">{{ event.creator_username }}</span>
                     </a>
                 </div>
+                {% if current_user.is_authenticated %}
                 <button type="button" class="save-icon-btn" onclick="openSaveModal()">
                     <svg class="bookmark-icon">
                       <use href="../../static/images/icons.svg#icon-bookmarks"></use>
                     </svg>
                   </button>
+                {% endif %}
                   
 
                   
@@ -49,8 +52,8 @@
             </div>
             <br>
             {% if current_user.id == event.creator_id %}
-    <a class="edit-button" onclick="openModal('editEventModal')" style="color: #fff;">Edit</a>
-{% endif %}
+                <a class="edit-button" onclick="openModal('editEventModal')" style="color: #fff;">Edit</a>
+            {% endif %}
         </div>
     </div>
 
@@ -80,6 +83,7 @@
     </div>
 </div>
 
+{% if current_user.is_authenticated %}
 
 <div id="saveModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -130,7 +134,7 @@
     </div>
   </div>
   
-  
+  {% endif %}
 <script>
     function openSaveModal() {
       document.getElementById("saveModal").style.display = "block";
